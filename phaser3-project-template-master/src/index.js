@@ -18,8 +18,8 @@ var config = {
     
   scene: {
     preload: preload,
-    create: create,
-    update: update
+    create: create
+    //update: update
   }
 };
 
@@ -44,27 +44,27 @@ function preload() {
 
 
 function create() {
- 
+
 var offset = 380;
 
 
    var bg = this.add.image(760 +offset, 130, "background");
    var bg2 = this.add.image(0 +offset, 130, "background");
 
+   platform = this.physics.add.staticImage(380,260, 'platform');
+
+   stone = this.physics.add.image(400, 100, 'stone');
+   stone.setOrigin(0.5, 0);
+   stone.setVelocity(150, 300);
+   stone.setBounce(1, 1);
+   stone.setCollideWorldBounds(true);
+   this.physics.add.collider(stone, platform);
+
    var grass = this.add.image(760 +offset, 237, 'grass');
+   
    var grass2 = this.add.image(0  +offset, 237, 'grass');
     
-  stone = this.physics.add.image(400, 100, 'stone');
-
-  platform = this.physics.add.staticImage(380,240, 'platform');
-
-  stone.setOrigin(0.5, 0);
-  stone.setVelocity(50, 60);
-  stone.setBounce(1, 1);
-  stone.setCollideWorldBounds(true);
-
-  this.physics.add.collider(stone, platform);
-  lastY = stone.y
+  
   this.tweens.add({
     targets: grass, 
      x: 380,
@@ -97,11 +97,18 @@ var offset = 380;
     });
 
     this.sys.events.on('postupdate', update, this);
+
+
+   
+
+  
+ 
+
 }
 
  function update(){
 
-this.physics.world.collide(sprite, [platform]);
+
 
  }
 
