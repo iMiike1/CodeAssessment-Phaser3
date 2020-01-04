@@ -1,47 +1,70 @@
 import Phaser from "phaser";
 import grassImg from "./assets/grass.png";
-import backgroundImg from "./assets/background.png"
-import stoneImg  from "./assets/stone.png";
+import backgroundImg from "./assets/background.png";
+import stonImg  from "./assets/stone.png";
+import platformImg  from "./assets/physicalPlatform.png"
 
-const config = {
+var config = {
   type: Phaser.AUTO,
-  parent: "phaser-example",
-  width: 760,
+    width: 760,
   height: 260,
+  parent : 'phaser-example',
+  physics:{
+    default: 'arcade',
+    arcrade :{
+      gravity :{ y: 300},
+    }
+  },
+    
   scene: {
     preload: preload,
-    create: create
-    //update: update
+    create: create,
+    update: update
   }
 };
 
-const game = new Phaser.Game(config);
+var stone = null;
+
+var platform;
+
+
+// eslint-disable-next-line no-unused-vars
+var game = new Phaser.Game(config);
 
 function preload() {
-  this.load.image("grass", grassImg);
-  this.load.image("background", backgroundImg);
-  this.load.image("stone", stoneImg);
-  
+
+  this.load.image('grass', grassImg);
+  this.load.image('stone', stonImg);
+  this.load.image('platform', platformImg);
+  this.load.image('background', backgroundImg);
+      
 }
 
+
+
+
 function create() {
+ 
+var offset = 380;
 
-  
-  var offset = 380;
 
-  const grass = this.add.image(760 +offset, 237, "grass");
-  const grass2 = this.add.image(0  +offset, 237, "grass");
+   var bg = this.add.image(760 +offset, 130, "background");
+   var bg2 = this.add.image(0 +offset, 130, "background");
 
-  const bg = this.add.image(760 +offset, 130, "background");
-  const bg2 = this.add.image(0 +offset, 130, "background");
-  
-  this.stoneGroup = this.game.add.group();
+   var grass = this.add.image(760 +offset, 237, 'grass');
+   var grass2 = this.add.image(0  +offset, 237, 'grass');
+    
+  stone = this.physics.add.image(400, 100, 'stone');
 
-  bg.depth = 0;
-  bg.depth = 0;
-  grass2.depth = 1;
-  grass.depth =1;
-  
+  platform = this.physics.add.staticImage(380,240, 'platform');
+
+  stone.setOrigin(0.5, 0);
+  stone.setVelocity(50, 60);
+  stone.setBounce(1, 1);
+  stone.setCollideWorldBounds(true);
+
+  this.physics.add.collider(stone, platform);
+  lastY = stone.y
   this.tweens.add({
     targets: grass, 
      x: 380,
@@ -63,7 +86,7 @@ function create() {
     duration: 32000,
     loop: -1
       
-    })
+    });
 
     this.tweens.add({
       targets: bg2,
@@ -71,18 +94,26 @@ function create() {
     duration: 32000,
     loop: -1
       
-    })
+    });
 
-
+    this.sys.events.on('postupdate', update, this);
 }
 
-// function update()
-// {
-//   var randomValue = Phaser.Math.Between(5,30);
+ function update(){
 
-//   var timer = scene.time.addEvent({
-//   delay: randomValue,
-//   });
+this.physics.world.collide(sprite, [platform]);
+
+ }
 
 
-// }
+
+
+
+
+
+ 
+ 
+
+ 
+
+
