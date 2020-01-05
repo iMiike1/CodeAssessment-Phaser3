@@ -59,10 +59,10 @@ var offset = 380;
    stone.setVelocity(-380, 0);
    stone.setBounce(1, 1);
    stone.setCollideWorldBounds(true);
+
    this.physics.add.collider(stone, platform);
 
    var grass = this.add.image(760 +offset, 237, 'grass');
-   
    var grass2 = this.add.image(0  +offset, 237, 'grass');
     
   
@@ -97,19 +97,22 @@ var offset = 380;
       
     });
 
-    var bush1 = this.add.group({key: 'bush', frame:0, repeat:5, setXY:{x:32, y: 50, stepX: 150}});
-    bush1.setVelocity(-30,0);
+    this.tweens.add({
 
-    Phaser.Actions.IncX(bush1.getChildren(),100);
-    Phaser.Actions.setVelocity();
+      targets: bush1,
+      x:-50,
+      duration: 15000,
+      loop: -1
+
+    });
+
+    //var bush1 = this.add.group({key: 'bush', frame:0, repeat:5, setXY:{x:32, y: 50, stepX: 150}});
+    //bush1.setVelocity(-30,0);
+
+    //Phaser.Actions.IncX(bush1.getChildren(),100);
+    //Phaser.Actions.setVelocity();
 
     this.sys.events.on('postupdate', update, this);
-
-
-   
-
-  
- 
 
 }
 
