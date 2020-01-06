@@ -46,7 +46,7 @@ var platform = null;
 var jumpButton = null;
 var cursors = null;
 
-var BushesA = null;
+var BushA;
 
 
 function create() {
@@ -57,14 +57,15 @@ var offset = 380;
    var bg = this.add.image(760 +offset, 130, "background");
    var bg2 = this.add.image(0 +offset, 130, "background");
 
-   
-  BushesA = this.add.group();
-  for (var i =0; i < 5; i ++ )
-  {
-    BushesA.crea
 
-  }
 
+   BushA = this.physics.add.image(500,200,'bush');
+   BushA.enableBody = false;
+   //BushA.setCollideWorldBounds(true);
+   BushA.body.allowGravity = false;
+   BushA.setVelocity(-150,0);
+  
+  
 
 
    platform = this.physics.add.staticImage(380,260, 'platform');
@@ -76,6 +77,9 @@ var offset = 380;
    var grass = this.add.image(760 +offset, 237, 'grass');
    var grass2 = this.add.image(0  +offset, 237, 'grass');
     
+
+
+
    
   this.tweens.add({
     targets: grass, 
@@ -118,6 +122,16 @@ var offset = 380;
 
  function update(){
 
+  if (BushA.x < -300)
+  {
+    
+    BushA.setPosition(Phaser.Math.RND.between(850,1200),200);
+    console.log(BushA.x);
+  }
+
+
+
+  //console.log(BushA.x);
   if (jumpButton.isDown){
     
     
