@@ -8,19 +8,22 @@ import bushImg from "./assets/bush.png"
 var config = {
   type: Phaser.AUTO,
     width: 760,
-  height: 260,
+  height: 950,
   parent : 'phaser-example',
-  physics:{
+  physics: {
     default: 'arcade',
-    arcrade :{
-      gravity :{ y: 300},
+    fps: 60,
+    arcade: {
+        gravity: { y: 300 },
+        debug: true
     }
+
   },
     
   scene: {
     preload: preload,
-    create: create
-    //update: update
+    create: create,
+    update: update
   }
 };
 
@@ -43,24 +46,27 @@ function preload() {
 
 
 
-
+var cursors;
+var jumpButton;
 function create() {
 
 var offset = 380;
 
-
+//this.physics.world.defaults.debugShowBody = true;
+//this.physics.world.defaults.bodyDebugColor = 0xff00ff;
    var bg = this.add.image(760 +offset, 130, "background");
    var bg2 = this.add.image(0 +offset, 130, "background");
 
    platform = this.physics.add.staticImage(380,260, 'platform');
 
-   stone = this.physics.add.image(400, 215, 'stone');
-   stone.setOrigin(0.5, 0);
-   stone.setVelocity(-380, 0);
-   stone.setBounce(1, 1);
+   stone = this.physics.add.image(400, 150, 'stone');
+   stone.body.allowGravity = true;
+   //stone.body.gravity = 1;
+   //stone.setOrigin(0.5, 0);
+   //stone.body.gravity = 0.1;
+   //stone.setVelocity(-380, 0);
+   stone.setBounce(0.2);
    stone.setCollideWorldBounds(true);
-
-   this.physics.add.collider(stone, platform);
 
    var grass = this.add.image(760 +offset, 237, 'grass');
    var grass2 = this.add.image(0  +offset, 237, 'grass');
@@ -106,19 +112,41 @@ var offset = 380;
 
     });
 
-    //var bush1 = this.add.group({key: 'bush', frame:0, repeat:5, setXY:{x:32, y: 50, stepX: 150}});
-    //bush1.setVelocity(-30,0);
+    var bush1 = this.add.group({key: 'bush', frame:0, repeat:5, setXY:{x:32, y: 50, stepX: 150}});
+    
 
     //Phaser.Actions.IncX(bush1.getChildren(),100);
     //Phaser.Actions.setVelocity();
 
-    this.sys.events.on('postupdate', update, this);
+    //this.sys.events.on('postupdate', update, this);
+
+    cursors = this.input.keyboard.createCursorKeys();
+    jumpButton = this.input.keyboard.addKey('SPACE');
+
+    this.physics.add.collider(stone, platform);
 
 }
 
  function update(){
 
+  
 
+
+  if (jumpButton.isDown){
+    
+    
+  stone.body.velocity.y = -150,
+  console.log( stone.y);
+    
+  }
+  if (jumpButton.isUp)
+  {
+    
+    
+    //stone.body.gravity = 1;
+
+  }
+//console.log('diocan');
 
  }
 
