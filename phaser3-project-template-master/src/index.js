@@ -5,7 +5,9 @@ import stonImg  from "./assets/stone.png";
 import platformImg  from "./assets/physicalPlatform.png";
 import bushImg from "./assets/bush.png";
 import bush2Img from "./assets/bush2.png";
-import bush3Img from "./assets/bush3.png"
+import bush3Img from "./assets/bush3.png";
+import fenceImg from "./assets/fence.png";
+import beeImg from "./assets/bee.png";
 
 var config = {
   type: Phaser.AUTO,
@@ -42,6 +44,8 @@ function preload() {
   this.load.image('bush', bushImg); 
   this.load.image('bush2', bush2Img);  
   this.load.image('bush3', bush3Img);  
+  this.load.image('fence', fenceImg);
+  this.load.image('bee', beeImg);
 }
 
 
@@ -55,6 +59,12 @@ var Bushes,Bushes2,Bushes3;
 
 var Bush1,Bush2,Bush3,Bush4,Bush5,Bush6,Bush7,Bush8,Bush9;
 
+
+var EnemyBee;
+
+var Fences;
+var fence1, fence2;
+ 
 //var Bush2;
 
 
@@ -72,18 +82,29 @@ var offset = 380;
    Bushes = this.add.group();
    Bushes2 = this.add.group();
    Bushes3 = this.add.group();
+   Fences = this.add.group();
 
-   Bush9 = this.physics.add.image(800,220,'bush3');
-   Bush8 = this.physics.add.image(2000,220,'bush3'); 
-   Bush7 = this.physics.add.image(1020,220,'bush3');
+
+
+   Bush9 = this.physics.add.image(800,240,'bush3');
+   Bush8 = this.physics.add.image(2000,240,'bush3'); 
+   Bush7 = this.physics.add.image(1020,240,'bush3');
   
-   Bush4 = this.physics.add.image(1950,220,'bush2');
-   Bush5 = this.physics.add.image(1230,220,'bush2');
-   Bush6 = this.physics.add.image(930,220,'bush2');
+   Bush4 = this.physics.add.image(1950,230,'bush2');
+   Bush5 = this.physics.add.image(1230,230,'bush2');
+   Bush6 = this.physics.add.image(930,230,'bush2');
+
+   fence1 = this.physics.add.image(1000, 200,'fence');
+   fence2 = this.physics.add.image(650, 200,'fence');
 
    Bush1 = this.physics.add.image(1200, 200,'bush'); 
-   Bush2 = this.physics.add.image(500,200,'bush');
-   Bush3 = this.physics.add.image(1800,200,'bush'); 
+   Bush2 = this.physics.add.image(500, 200,'bush');
+   Bush3 = this.physics.add.image(1800, 200,'bush'); 
+
+  EnemyBee = this.physics.add.image(500,130,'bee');
+  EnemyBee.enableBody = false;
+  EnemyBee.body.allowGravity = false;
+  EnemyBee.setVelocity(-80,-10);
 
 
    Bushes.add(Bush1);
@@ -98,10 +119,15 @@ var offset = 380;
    Bushes3.add(Bush8);
    Bushes3.add(Bush9);
 
-  
-setupBushes1();
-setupBushes2();
-setupBushes3();
+  Fences.add(fence1);
+  Fences.add(fence2);
+
+  setupBushes1();
+  setupBushes2();
+  setupBushes3();
+  setupFences();
+
+
 
    platform = this.physics.add.staticImage(380,260, 'platform');
    stone = this.physics.add.image(400, 150, 'stone');
@@ -167,7 +193,6 @@ function setupBushes1()
    bushes1C[i].enableBody = false;  
    bushes1C[i].setVelocity(-150,0);
    
-
   }
  
 }
@@ -195,27 +220,40 @@ function setupBushes3()
   {
     bushes3C[i].body.allowGravity = false;
     bushes3C[i].enableBody = false;  
-    bushes3C[i].setVelocity(-130,0);
+    bushes3C[i].setVelocity(-110,0);
   }
 
 }
 
 
-//Update Function
-  function update(){
-    
-    
+function setupFences()
+{
 
+  var FencesC = Fences.getChildren();
+
+  for (var i = 0; i < FencesC.length; i++)
+  {
+    FencesC[i].body.allowGravity = false;
+    FencesC[i].enableBody = false;  
+    FencesC[i].setVelocity(-110,0);
+  }
+}
+
+//Update Function
+  function update(){ 
   if (jumpButton.isDown){
     
-    
-  stone.body.velocity.y = -400,
-  console.log( stone.y);
+  stone.body.velocity.y = -400;
+ 
     
     }
  
 iterateChildrens1();
 iterateChildrens2();
+iterateChildrens3();
+iterateFences();
+iterateBees();
+
 
 }
 
@@ -229,7 +267,7 @@ function iterateChildrens1()
   {
     if (bushes1C[i].x < -300)
     {
-      bushes1C[i].setPosition(Phaser.Math.RND.between(750,1200),200);
+      bushes1C[i].setPosition(Phaser.Math.RND.between(800,1200),200);
     }
    
  }
@@ -245,15 +283,67 @@ function iterateChildrens2()
   {
     if (bushes2C[i].x < -300)
     {
-      bushes2C[i].setPosition(Phaser.Math.RND.between(750,1800),200);
+      bushes2C[i].setPosition(Phaser.Math.RND.between(750,1800),230);
     }
     
   }
 
 }
 
+function iterateChildrens3()
+{
 
+  var bushes3C = Bushes3.getChildren();
+
+  for (var i = 0; i<bushes3C.length; i++)
+  {
+    if (bushes3C[i].x < -300)
+    {
+      bushes3C[i].setPosition(Phaser.Math.RND.between(750,2500),240);
+
+    }
+
+  }
+
+}
+
+function iterateFences()
+{
+
+  var fencesC = Fences.getChildren();
+
+  for (var i=0; i < fencesC.length; i++)
+  {
+  
+    if (fencesC[i].x < -300)
+    {
+      fencesC[i].setPosition(Phaser.Math.RND.between(1000,2000), 200);
+
+    }
+
+  }
+
+}
  
+
+function iterateBees()
+{ 
+
+  if (EnemyBee.y < 120)
+  {
+    EnemyBee.setVelocityY(10);
+  }
+  else if (EnemyBee.y > 135)
+  {
+    EnemyBee.setVelocityY(-10);
+  }
+  else if (EnemyBee.x < -300)
+  {
+    EnemyBee.setPosition(Phaser.Math.RND.between(800,1300),130);
+
+  }
+
+}
  
 
  
