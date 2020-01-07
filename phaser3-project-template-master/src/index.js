@@ -67,7 +67,7 @@ var fence1, fence2;
  
 //var Bush2;
 
-
+var colliderActive = true;
 
 
 //Create Function
@@ -130,6 +130,7 @@ var offset = 380;
 
 
    platform = this.physics.add.staticImage(380,260, 'platform');
+
    stone = this.physics.add.image(400, 150, 'stone');
    stone.body.allowGravity = true;
    stone.setBounce(0.2);
@@ -178,6 +179,8 @@ var offset = 380;
     jumpButton = this.input.keyboard.addKey('SPACE');
 
     this.physics.add.collider(stone, platform);
+    this.physics.add.overlap(EnemyBee, stone, printString, ()=> { return colliderActive;}, this);
+
     
    
 }
@@ -242,17 +245,12 @@ function setupFences()
 //Update Function
   function update(){ 
    
-    if (this.physics.add.overlap(stone, EnemyBee))
-    {
-      printString();
-    }
-
+    
 
     if (jumpButton.isDown){
     
   stone.body.velocity.y = -400;
  
-    
     }
  
 iterateChildrens1();
@@ -355,7 +353,15 @@ function iterateBees()
 
  function printString()
  {
+  colliderActive = false;
   console.log("beeHIt!");
+       var timer = this.time.addEvent({
+        delay: 1000,
+        callback: ()=>{
+            colliderActive = true;
+        },
+        loop: false
+    });
 
  }
 
