@@ -179,7 +179,7 @@ var offset = 380;
 
     this.physics.add.collider(stone, platform);
     
-
+   
 }
 
 
@@ -241,7 +241,14 @@ function setupFences()
 
 //Update Function
   function update(){ 
-  if (jumpButton.isDown){
+   
+    if (this.physics.add.overlap(stone, EnemyBee))
+    {
+      printString();
+    }
+
+
+    if (jumpButton.isDown){
     
   stone.body.velocity.y = -400;
  
@@ -346,6 +353,10 @@ function iterateBees()
 }
  
 
- 
+ function printString()
+ {
+  console.log("beeHIt!");
+
+ }
 
 
