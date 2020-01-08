@@ -108,7 +108,7 @@ this.input.enabled = true;
    Bush3 = this.physics.add.image(1800, 200,'bush'); 
 
   stone1 = this.physics.add.image(500,230,'stone');
-  stone2 = this.physics.add.image(550,230,'stone');
+  stone2 = this.physics.add.image(1500,230,'stone');
 
   EnemyBee = this.physics.add.image(500,130,'bee');
   EnemyBee.enableBody = false;
@@ -430,7 +430,7 @@ function iterateStones()
   for (var i = 0; i< stonesC.length; i++)
   {if (stonesC[i].x < -300)
     {
-    stonesC[i].setPosition(Phaser.Math.RND.between(1000,2000), stonesC[i].y);
+    stonesC[i].setPosition(Phaser.Math.RND.between(1000,4000), stonesC[i].y);
     }
   }
 }
