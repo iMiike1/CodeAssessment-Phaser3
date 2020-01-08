@@ -75,6 +75,7 @@ function create() {
 
 var offset = 380;
 
+this.input.enabled = true;
 
    var bg = this.add.image(760 +offset, 130, "background");
    var bg2 = this.add.image(0 +offset, 130, "background");
@@ -135,6 +136,7 @@ var offset = 380;
    stone.body.allowGravity = true;
    stone.setBounce(0.2);
    stone.setCollideWorldBounds(true);
+   stone.setInteractive();
 
    var grass = this.add.image(760 +offset, 237, 'grass');
    var grass2 = this.add.image(0  +offset, 237, 'grass');
@@ -245,7 +247,13 @@ function setupFences()
 //Update Function
   function update(){ 
    
-    
+    stone.on('pointerover',function(pointer){
+    if (stone.body.touching.down)
+    {
+ 
+   stone.body.velocity.y = -400;
+    }
+})
 
     if (jumpButton.isDown){
     
