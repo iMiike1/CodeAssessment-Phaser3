@@ -9,6 +9,9 @@ import bush3Img from "./assets/bush3.png";
 import fenceImg from "./assets/fence.png";
 import beeImg from "./assets/bee.png";
 import stoneImg from "./assets/stone.png";
+import manabarImg from "./assets/manaBar.png";
+import manaholderImg from "./assets/manaBarContour.png";
+import cherryImg  from "./assets/cherry.png";
 
 var config = {
   type: Phaser.AUTO,
@@ -48,6 +51,9 @@ function preload() {
   this.load.image('fence', fenceImg);
   this.load.image('bee', beeImg);
   this.load.image('stone', stoneImg);
+  this.load.image('manaBar', manabarImg);
+  this.load.image('manaHolder', manaholderImg);
+  this.load.image('cherry', cherryImg);
 }
 
 
@@ -66,6 +72,14 @@ var stone1, stone2;
 
 var EnemyBee;
 
+var cherries;
+var cherry;
+var cherry1;
+var cherryColliderActive = true;
+var cherry1ColliderActive = true;
+var cherryCounter =0;
+var cherry1Counter =0;
+
 var Fences;
 var fence1, fence2;
  
@@ -74,6 +88,8 @@ var fence1, fence2;
 var BeecolliderActive = true;
 var StonecolliderActive = true;
 
+var mana, manaholder;
+var percentage = 1;
 //Create Function
 function create() {
 
@@ -89,6 +105,7 @@ this.input.enabled = true;
    Bushes3 = this.add.group();
    Fences = this.add.group();
    stones = this.add.group();
+   cherries = this.add.group();
 
 
 
@@ -139,7 +156,7 @@ this.input.enabled = true;
   setupBushes3();
   setupFences();
   setupStones();
-
+  
 
 
    platform = this.physics.add.staticImage(380,260, 'platform');
@@ -168,8 +185,21 @@ this.input.enabled = true;
    var grass2 = this.add.image(0  +offset, 237, 'grass');
     
 
+  
+  cherry = this.physics.add.image(700,130,'cherry');
+  cherry1 = this.physics.add.image(1400,130,'cherry');
+  cherries.add(cherry);
+  cherries.add(cherry1);
 
+  setupCherries();
+ 
+  mana = this.add.image(700, 25,'manaBar');
+  mana.scaleX = percentage;
+  mana.setOrigin(1,0);
+  manaholder = this.add.image(mana.x,mana.y,'manaHolder');
+  manaholder.setOrigin(1,0);
 
+ 
    
   this.tweens.add({
     targets: grass, 
@@ -210,7 +240,7 @@ this.input.enabled = true;
     this.physics.add.collider(player1, platform);
     this.physics.add.collider(player2, platform);
 
-    this.physics.add.overlap(EnemyBee, player, printString, ()=> { return BeecolliderActive;}, this);
+    this.physics.add.overlap(EnemyBee, player, beeHIt, ()=> { return BeecolliderActive;}, this);
 
     this.physics.add.overlap(player, stone1, Stone1Hit, ()=>{return StonecolliderActive;}, this );
     this.physics.add.overlap(player1, stone1, Stone1Hit1, ()=>{return StonecolliderActive;}, this );
@@ -220,8 +250,13 @@ this.input.enabled = true;
     this.physics.add.overlap(player1, stone2, Stone2Hit1, ()=>{return StonecolliderActive;}, this );
     this.physics.add.overlap(player2, stone2, Stone2Hit2, ()=>{return StonecolliderActive;}, this );
 
-    
+    this.physics.add.overlap(player, cherry, cherryHitMessage, ()=>{return cherryColliderActive;}, this );
+    this.physics.add.overlap(player1, cherry, cherryHitMessage, ()=>{return cherryColliderActive;}, this );
+    this.physics.add.overlap(player2, cherry, cherryHitMessage, ()=>{return cherryColliderActive;}, this );
 
+    this.physics.add.overlap(player, cherry1, cherry1HitMessage, ()=>{return cherry1ColliderActive;}, this );
+    this.physics.add.overlap(player1, cherry1, cherry1HitMessage, ()=>{return cherry1ColliderActive;}, this );
+    this.physics.add.overlap(player2, cherry1, cherry1HitMessage, ()=>{return cherry1ColliderActive;}, this );
 
    
 }
@@ -300,6 +335,19 @@ function setupStones()
 }
 
 
+function setupCherries()
+{
+  var cherriesC = cherries.getChildren();
+  for (var i = 0; i < cherriesC.length; i++)
+  {
+      cherriesC[i].body.allowGravity = false;
+      cherriesC[i].enableBody = false;
+      cherriesC[i].setVelocity(-100,0);
+      
+  }
+
+}
+
 
 
 
@@ -307,6 +355,8 @@ function setupStones()
 
 //Update Function
   function update(){ 
+
+    mana.scaleX = percentage;
    
     player.on('pointerover',function(){
     if (player.body.touching.down)
@@ -431,6 +481,8 @@ function iterateStones()
   {if (stonesC[i].x < -300)
     {
     stonesC[i].setPosition(Phaser.Math.RND.between(1000,4000), stonesC[i].y);
+    
+
     }
   }
 }
@@ -458,6 +510,7 @@ function iterateBees()
 
 function Stone1Hit()
 {
+  ReduceMana();
   StonecolliderActive = false;  
   player.body.velocity.y = -250;
   this.time.addEvent({
@@ -471,6 +524,7 @@ function Stone1Hit()
 
 function Stone1Hit1()
 {
+  ReduceMana();
   StonecolliderActive = false;  
   player1.body.velocity.y = -250;
   this.time.addEvent({
@@ -484,6 +538,7 @@ function Stone1Hit1()
 }
 function Stone1Hit2()
 {
+  ReduceMana();
   StonecolliderActive = false;   
   player2.body.velocity.y = -250;
 
@@ -499,6 +554,7 @@ function Stone1Hit2()
 
 function Stone2Hit()
 {
+  ReduceMana();
   StonecolliderActive = false;  
   player.body.velocity.y = -250;
   this.time.addEvent({
@@ -512,6 +568,7 @@ function Stone2Hit()
 
 function Stone2Hit1()
 {
+  ReduceMana();
   StonecolliderActive = false;  
   player1.body.velocity.y = -250;
   this.time.addEvent({
@@ -525,6 +582,7 @@ function Stone2Hit1()
 }
 function Stone2Hit2()
 {
+  ReduceMana();
   StonecolliderActive = false;   
   player2.body.velocity.y = -250;
 
@@ -539,13 +597,100 @@ function Stone2Hit2()
 }
 
 
+function ReduceMana()
+{
+  percentage -= 0.01;
+  //console.log(percentage);
+}
+
+
+function cherryHitMessage()
+{
+  cherryCounter++;
+  cherryColliderActive = false;
+  console.log('cherryhit');
+
+       this.time.addEvent({
+        delay: 1000,
+        callback: ()=>{
+          cherryColliderActive = true;
+        },
+        loop: false
+    });
+
+    switch(cherryCounter){
+      
+      case 1: 
+      cherry.setScale(0.7);
+      break;
+      case 2: 
+      cherry.setScale(0.5);
+      break;
+      case 3:
+        increaseMana();
+      cherryResetPositionAndScale();
+      
+      cherryCounter = 0;
+      break;     
+    }
+}
+
+
+function cherry1HitMessage()
+{
+  cherry1Counter++;
+  cherry1ColliderActive = false;
+  console.log('cherryhit');
+
+       this.time.addEvent({
+        delay: 1000,
+        callback: ()=>{
+          cherry1ColliderActive = true;
+        },
+        loop: false
+    });
+
+    switch(cherry1Counter){
+      
+      case 1: 
+      cherry1.setScale(0.7);
+      break;
+      case 2: 
+      cherry1.setScale(0.5);
+      break;
+      case 3:
+      increaseMana();
+      cherry1ResetPositionAndScale();
+      cherry1Counter = 0;
+      break;     
+    }
+}
+
+function cherryResetPositionAndScale()
+{
+  cherry.setPosition(800, cherry.y);
+  cherry.setScale(1);
+
+}
+
+function cherry1ResetPositionAndScale()
+{
+  cherry1.setPosition(800, cherry.y);
+  cherry1.setScale(1);
+
+}
+
+function increaseMana()
+{
+  percentage += 0.05; 
+
+}
 
 
 
-
-
- function printString()
+ function beeHIt()
  {
+  ReduceMana();
   BeecolliderActive = false;
   console.log("beeHIt!");
 
