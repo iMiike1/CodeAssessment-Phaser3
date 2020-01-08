@@ -144,7 +144,7 @@ this.input.enabled = true;
 
    platform = this.physics.add.staticImage(380,260, 'platform');
 
-   player = this.physics.add.image(400, 150, 'player');
+   player = this.physics.add.image(350, 150, 'player');
    player.body.allowGravity = true;
    player.setBounce(0.2);
    player.setCollideWorldBounds(true);
@@ -215,6 +215,10 @@ this.input.enabled = true;
     this.physics.add.overlap(player, stone1, Stone1Hit, ()=>{return StonecolliderActive;}, this );
     this.physics.add.overlap(player1, stone1, Stone1Hit1, ()=>{return StonecolliderActive;}, this );
     this.physics.add.overlap(player2, stone1, Stone1Hit2, ()=>{return StonecolliderActive;}, this );
+
+    this.physics.add.overlap(player, stone2, Stone2Hit, ()=>{return StonecolliderActive;}, this );
+    this.physics.add.overlap(player1, stone2, Stone2Hit1, ()=>{return StonecolliderActive;}, this );
+    this.physics.add.overlap(player2, stone2, Stone2Hit2, ()=>{return StonecolliderActive;}, this );
 
     
 
@@ -493,7 +497,46 @@ function Stone1Hit2()
 
 }
 
+function Stone2Hit()
+{
+  StonecolliderActive = false;  
+  player.body.velocity.y = -250;
+  this.time.addEvent({
+    delay:100,
+    callback: ()=>{
+      StonecolliderActive = true;
+    },
+    loop: false
+});
+}
 
+function Stone2Hit1()
+{
+  StonecolliderActive = false;  
+  player1.body.velocity.y = -250;
+  this.time.addEvent({
+    delay:100,
+    callback: ()=>{
+      StonecolliderActive = true;
+    },
+    loop: false
+});
+
+}
+function Stone2Hit2()
+{
+  StonecolliderActive = false;   
+  player2.body.velocity.y = -250;
+
+  this.time.addEvent({
+    delay:100,
+    callback: ()=>{
+      StonecolliderActive = true;
+    },
+    loop: false
+});
+
+}
 
 
 
