@@ -1,13 +1,14 @@
 import Phaser from "phaser";
 import grassImg from "./assets/grass.png";
 import backgroundImg from "./assets/background.png";
-import stonImg  from "./assets/stone.png";
+import playerImg  from "./assets/player.png";
 import platformImg  from "./assets/physicalPlatform.png";
 import bushImg from "./assets/bush.png";
 import bush2Img from "./assets/bush2.png";
 import bush3Img from "./assets/bush3.png";
 import fenceImg from "./assets/fence.png";
 import beeImg from "./assets/bee.png";
+import stoneImg from "./assets/stone.png";
 
 var config = {
   type: Phaser.AUTO,
@@ -38,7 +39,7 @@ var game = new Phaser.Game(config);
 function preload() {
 
   this.load.image('grass', grassImg);
-  this.load.image('stone', stonImg);
+  this.load.image('player', playerImg);
   this.load.image('platform', platformImg);
   this.load.image('background', backgroundImg);
   this.load.image('bush', bushImg); 
@@ -46,10 +47,11 @@ function preload() {
   this.load.image('bush3', bush3Img);  
   this.load.image('fence', fenceImg);
   this.load.image('bee', beeImg);
+  this.load.image('stone', stoneImg);
 }
 
 
-var stone = null;
+var player, player1, player2;
 var platform = null;
 var jumpButton = null;
 //var cursors = null;
@@ -59,6 +61,8 @@ var Bushes,Bushes2,Bushes3;
 
 var Bush1,Bush2,Bush3,Bush4,Bush5,Bush6,Bush7,Bush8,Bush9;
 
+var stones;
+var stone1, stone2;
 
 var EnemyBee;
 
@@ -67,8 +71,8 @@ var fence1, fence2;
  
 //var Bush2;
 
-var colliderActive = true;
-
+var BeecolliderActive = true;
+var StonecolliderActive = true;
 
 //Create Function
 function create() {
@@ -84,6 +88,7 @@ this.input.enabled = true;
    Bushes2 = this.add.group();
    Bushes3 = this.add.group();
    Fences = this.add.group();
+   stones = this.add.group();
 
 
 
@@ -101,6 +106,9 @@ this.input.enabled = true;
    Bush1 = this.physics.add.image(1200, 200,'bush'); 
    Bush2 = this.physics.add.image(500, 200,'bush');
    Bush3 = this.physics.add.image(1800, 200,'bush'); 
+
+  stone1 = this.physics.add.image(500,230,'stone');
+  stone2 = this.physics.add.image(550,230,'stone');
 
   EnemyBee = this.physics.add.image(500,130,'bee');
   EnemyBee.enableBody = false;
@@ -123,20 +131,38 @@ this.input.enabled = true;
   Fences.add(fence1);
   Fences.add(fence2);
 
+   stones.add(stone1);
+  stones.add(stone2);
+
   setupBushes1();
   setupBushes2();
   setupBushes3();
   setupFences();
+  setupStones();
 
 
 
    platform = this.physics.add.staticImage(380,260, 'platform');
 
-   stone = this.physics.add.image(400, 150, 'stone');
-   stone.body.allowGravity = true;
-   stone.setBounce(0.2);
-   stone.setCollideWorldBounds(true);
-   stone.setInteractive();
+   player = this.physics.add.image(400, 150, 'player');
+   player.body.allowGravity = true;
+   player.setBounce(0.2);
+   player.setCollideWorldBounds(true);
+   player.setInteractive();
+
+   player1 = this.physics.add.image(player.x - 80, 150, 'player');
+   player1.body.allowGravity = true;
+   player1.setBounce(0.2);
+   player1.setCollideWorldBounds(true);
+   player1.setInteractive();
+
+
+   player2 = this.physics.add.image(player.x + 80, 150, 'player');
+   player2.body.allowGravity = true;
+   player2.setBounce(0.2);
+   player2.setCollideWorldBounds(true);
+   player2.setInteractive();
+
 
    var grass = this.add.image(760 +offset, 237, 'grass');
    var grass2 = this.add.image(0  +offset, 237, 'grass');
@@ -180,10 +206,19 @@ this.input.enabled = true;
     //cursors = this.input.keyboard.createCursorKeys();
     jumpButton = this.input.keyboard.addKey('SPACE');
 
-    this.physics.add.collider(stone, platform);
-    this.physics.add.overlap(EnemyBee, stone, printString, ()=> { return colliderActive;}, this);
+    this.physics.add.collider(player, platform);
+    this.physics.add.collider(player1, platform);
+    this.physics.add.collider(player2, platform);
+
+    this.physics.add.overlap(EnemyBee, player, printString, ()=> { return BeecolliderActive;}, this);
+
+    this.physics.add.overlap(player, stone1, Stone1Hit, ()=>{return StonecolliderActive;}, this );
+    this.physics.add.overlap(player1, stone1, Stone1Hit1, ()=>{return StonecolliderActive;}, this );
+    this.physics.add.overlap(player2, stone1, Stone1Hit2, ()=>{return StonecolliderActive;}, this );
 
     
+
+
    
 }
 
@@ -244,20 +279,62 @@ function setupFences()
   }
 }
 
+
+function setupStones()
+{
+  var stonesC = stones.getChildren();
+
+  for (var i = 0; i< stonesC.length; i++)
+  {
+    stonesC[i].body.allowGravity = false;
+    stonesC[i].enableBody = true;
+    stonesC[i].setVelocity(-380,0);
+
+  }
+
+
+}
+
+
+
+
+
+
+
 //Update Function
   function update(){ 
    
-    stone.on('pointerover',function(pointer){
-    if (stone.body.touching.down)
+    player.on('pointerover',function(){
+    if (player.body.touching.down)
     {
  
-   stone.body.velocity.y = -400;
+      player.body.velocity.y = -400;
     }
 })
 
+player1.on('pointerover',function(){
+  if (player1.body.touching.down)
+  {
+
+    player1.body.velocity.y = -400;
+  }
+})
+
+player2.on('pointerover',function(){
+  if (player2.body.touching.down)
+  {
+
+    player2.body.velocity.y = -400;
+  }
+})
+
+
+
+
+
     if (jumpButton.isDown){
     
-  stone.body.velocity.y = -400;
+      player.body.velocity.y = -400;
  
     }
  
@@ -266,6 +343,7 @@ iterateChildrens2();
 iterateChildrens3();
 iterateFences();
 iterateBees();
+iterateStones();
 
 
 }
@@ -339,6 +417,21 @@ function iterateFences()
 }
  
 
+
+function iterateStones()
+{
+   
+  var stonesC = stones.getChildren();
+
+  for (var i = 0; i< stonesC.length; i++)
+  {if (stonesC[i].x < -300)
+    {
+    stonesC[i].setPosition(Phaser.Math.RND.between(1000,2000), stonesC[i].y);
+    }
+  }
+}
+
+
 function iterateBees()
 { 
 
@@ -359,14 +452,64 @@ function iterateBees()
 }
  
 
+function Stone1Hit()
+{
+  StonecolliderActive = false;  
+  player.body.velocity.y = -250;
+  this.time.addEvent({
+    delay:100,
+    callback: ()=>{
+      StonecolliderActive = true;
+    },
+    loop: false
+});
+}
+
+function Stone1Hit1()
+{
+  StonecolliderActive = false;  
+  player1.body.velocity.y = -250;
+  this.time.addEvent({
+    delay:100,
+    callback: ()=>{
+      StonecolliderActive = true;
+    },
+    loop: false
+});
+
+}
+function Stone1Hit2()
+{
+  StonecolliderActive = false;   
+  player2.body.velocity.y = -250;
+
+  this.time.addEvent({
+    delay:100,
+    callback: ()=>{
+      StonecolliderActive = true;
+    },
+    loop: false
+});
+
+}
+
+
+
+
+
+
+
+
+
  function printString()
  {
-  colliderActive = false;
+  BeecolliderActive = false;
   console.log("beeHIt!");
-       var timer = this.time.addEvent({
-        delay: 1000,
+
+       this.time.addEvent({
+        delay: 500,
         callback: ()=>{
-            colliderActive = true;
+          BeecolliderActive = true;
         },
         loop: false
     });
