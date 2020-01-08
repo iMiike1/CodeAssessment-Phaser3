@@ -12,6 +12,8 @@ import stoneImg from "./assets/stone.png";
 import manabarImg from "./assets/manaBar.png";
 import manaholderImg from "./assets/manaBarContour.png";
 import cherryImg  from "./assets/cherry.png";
+import starImg  from "./assets/star.png";
+import shieldImg from "./assets/shield.png";
 
 var config = {
   type: Phaser.AUTO,
@@ -54,6 +56,8 @@ function preload() {
   this.load.image('manaBar', manabarImg);
   this.load.image('manaHolder', manaholderImg);
   this.load.image('cherry', cherryImg);
+  this.load.image('stars', starImg);
+  this.load.image('shield', shieldImg);
 }
 
 
@@ -80,6 +84,13 @@ var cherry1ColliderActive = true;
 var cherryCounter =0;
 var cherry1Counter =0;
 
+var isPlayerShielded = true; 
+var isPlayer1Shielded = true;
+var isPlayer2Shielded = true;
+
+
+var star;
+var shield;
 var Fences;
 var fence1, fence2;
  
@@ -180,6 +191,11 @@ this.input.enabled = true;
    player2.setCollideWorldBounds(true);
    player2.setInteractive();
 
+  
+   shield = this.physics.add.image(1000, 1000,'shield');
+   shield.body.allowGravity = false;
+   shield.enableBody = false;
+
 
    var grass = this.add.image(760 +offset, 237, 'grass');
    var grass2 = this.add.image(0  +offset, 237, 'grass');
@@ -199,8 +215,11 @@ this.input.enabled = true;
   manaholder = this.add.image(mana.x,mana.y,'manaHolder');
   manaholder.setOrigin(1,0);
 
- 
-   
+  star = this.physics.add.image(750,150,'stars');
+  star.body.allowGravity = false;
+  star.enableBody = false;
+  star.body.setVelocity(-20,0);
+
   this.tweens.add({
     targets: grass, 
      x: 380,
@@ -258,7 +277,9 @@ this.input.enabled = true;
     this.physics.add.overlap(player1, cherry1, cherry1HitMessage, ()=>{return cherry1ColliderActive;}, this );
     this.physics.add.overlap(player2, cherry1, cherry1HitMessage, ()=>{return cherry1ColliderActive;}, this );
 
-   
+    this.physics.add.overlap(player, star, playerHitStar, ()=>{return isPlayerShielded;}, this );
+    this.physics.add.overlap(player1, star, player1HitStar, ()=>{return isPlayer1Shielded;}, this );
+    this.physics.add.overlap(player2, star, player2HitStar, ()=>{return isPlayer2Shielded;}, this );
 }
 
 
@@ -355,6 +376,26 @@ function setupCherries()
 
 //Update Function
   function update(){ 
+    console.log(star.x);
+
+  if (!isPlayerShielded)
+  {
+    shield.setPosition(player.x, player.y);
+
+  }
+  else if (!isPlayer1Shielded)
+  {
+    shield.setPosition(player1.x, player1.y);
+
+  }
+ else if (!isPlayer2Shielded)
+ {
+
+  shield.setPosition(player2.x, player2.y);
+ }
+
+
+ 
 
     mana.scaleX = percentage;
    
@@ -384,8 +425,6 @@ player2.on('pointerover',function(){
 
 
 
-
-
     if (jumpButton.isDown){
     
       player.body.velocity.y = -400;
@@ -400,9 +439,7 @@ iterateBees();
 iterateStones();
 
 
-}
-
-
+  }
 
 function iterateChildrens1()
 {
@@ -688,8 +725,7 @@ function increaseMana()
 
 
 
- function beeHIt()
- {
+ function beeHIt(){
   ReduceMana();
   BeecolliderActive = false;
   console.log("beeHIt!");
@@ -705,3 +741,52 @@ function increaseMana()
  }
 
 
+
+function playerHitStar(){
+console.log('starHit');
+isPlayerShielded = false;
+//shield.setPosition(player.x, player.y); 
+
+this.time.addEvent({
+  delay: 5000,
+  callback: ()=>{
+    isPlayerShielded = true;
+    shield.setPosition(1000, 1000); 
+  },
+  loop: false
+});
+
+}
+
+ function player1HitStar(){
+  console.log('star2Hit');
+  isPlayer1Shielded = false;
+  
+  
+  this.time.addEvent({
+    delay: 5000,
+    callback: ()=>{
+      isPlayer1Shielded = true;
+      shield.setPosition(1000, 1000); 
+    },
+    loop: false
+  });
+
+}
+
+function player2HitStar(){
+  console.log('star2Hit');
+  isPlayer2Shielded = false;
+  
+  
+  this.time.addEvent({
+    delay: 5000,
+    callback: ()=>{
+      isPlayer2Shielded = true;
+      shield.setPosition(1000, 1000); 
+    },
+    loop: false
+  });
+ }
+
+ 
