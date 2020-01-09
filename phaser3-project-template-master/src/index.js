@@ -348,7 +348,7 @@ function setupStones()
   {
     stonesC[i].body.allowGravity = false;
     stonesC[i].enableBody = true;
-    stonesC[i].setVelocity(-380,0);
+    stonesC[i].setVelocity(-200,0);
 
   }
 
