@@ -84,9 +84,18 @@ var cherry1ColliderActive = true;
 var cherryCounter =0;
 var cherry1Counter =0;
 
+
+//determines if the shield is taken or not the shield to the player
 var isPlayerShielded = true; 
 var isPlayer1Shielded = true;
 var isPlayer2Shielded = true;
+
+//determines if the player should take damage or not
+var ShieldP1 = false;
+var ShieldP2 = false;
+var ShieldP3 = false;
+
+
 
 
 var star;
@@ -97,6 +106,8 @@ var fence1, fence2;
 //var Bush2;
 
 var BeecolliderActive = true;
+
+
 var StonecolliderActive = true;
 
 var mana, manaholder;
@@ -218,7 +229,7 @@ this.input.enabled = true;
   star = this.physics.add.image(750,150,'stars');
   star.body.allowGravity = false;
   star.enableBody = false;
-  star.body.setVelocity(-20,0);
+  star.body.setVelocity(-150,0);
 
   this.tweens.add({
     targets: grass, 
@@ -260,6 +271,8 @@ this.input.enabled = true;
     this.physics.add.collider(player2, platform);
 
     this.physics.add.overlap(EnemyBee, player, beeHIt, ()=> { return BeecolliderActive;}, this);
+    this.physics.add.overlap(EnemyBee, player1, beeHIt1, ()=> { return BeecolliderActive;}, this);
+    this.physics.add.overlap(EnemyBee, player2, beeHIt2, ()=> { return BeecolliderActive;}, this);
 
     this.physics.add.overlap(player, stone1, Stone1Hit, ()=>{return StonecolliderActive;}, this );
     this.physics.add.overlap(player1, stone1, Stone1Hit1, ()=>{return StonecolliderActive;}, this );
@@ -363,7 +376,7 @@ function setupCherries()
   {
       cherriesC[i].body.allowGravity = false;
       cherriesC[i].enableBody = false;
-      cherriesC[i].setVelocity(-100,0);
+      cherriesC[i].setVelocity(-200,0);
       
   }
 
@@ -376,7 +389,8 @@ function setupCherries()
 
 //Update Function
   function update(){ 
-    console.log(star.x);
+   
+   
 
   if (!isPlayerShielded)
   {
@@ -437,6 +451,7 @@ iterateChildrens3();
 iterateFences();
 iterateBees();
 iterateStones();
+resetStar();
 
 
   }
@@ -547,6 +562,7 @@ function iterateBees()
 
 function Stone1Hit()
 {
+if (!ShieldP1){
   ReduceMana();
   StonecolliderActive = false;  
   player.body.velocity.y = -250;
@@ -557,10 +573,13 @@ function Stone1Hit()
     },
     loop: false
 });
+
+}
 }
 
 function Stone1Hit1()
 {
+  if (!ShieldP2){
   ReduceMana();
   StonecolliderActive = false;  
   player1.body.velocity.y = -250;
@@ -571,10 +590,11 @@ function Stone1Hit1()
     },
     loop: false
 });
-
+  }
 }
 function Stone1Hit2()
 {
+  if (!ShieldP3){
   ReduceMana();
   StonecolliderActive = false;   
   player2.body.velocity.y = -250;
@@ -586,11 +606,12 @@ function Stone1Hit2()
     },
     loop: false
 });
-
+  }
 }
 
 function Stone2Hit()
 {
+  if (!ShieldP1){
   ReduceMana();
   StonecolliderActive = false;  
   player.body.velocity.y = -250;
@@ -601,10 +622,12 @@ function Stone2Hit()
     },
     loop: false
 });
+  }
 }
 
 function Stone2Hit1()
 {
+  if (!ShieldP2){
   ReduceMana();
   StonecolliderActive = false;  
   player1.body.velocity.y = -250;
@@ -615,10 +638,11 @@ function Stone2Hit1()
     },
     loop: false
 });
-
+  }
 }
 function Stone2Hit2()
 {
+  if (!ShieldP3){
   ReduceMana();
   StonecolliderActive = false;   
   player2.body.velocity.y = -250;
@@ -630,14 +654,13 @@ function Stone2Hit2()
     },
     loop: false
 });
-
+  }
 }
 
 
 function ReduceMana()
 {
   percentage -= 0.01;
-  //console.log(percentage);
 }
 
 
@@ -725,7 +748,12 @@ function increaseMana()
 
 
 
+//Bee Damage mechanics
+//If related player shield (SHIELDP) is turned off then reduce mana and allow bee collision again after 500ms
+
+
  function beeHIt(){
+   if (!ShieldP1){
   ReduceMana();
   BeecolliderActive = false;
   console.log("beeHIt!");
@@ -737,21 +765,57 @@ function increaseMana()
         },
         loop: false
     });
+  }
+ }
 
+ function beeHIt1(){
+   if (!ShieldP2){
+  ReduceMana();
+  BeecolliderActive = false;
+  console.log("beeHIt!");
+
+       this.time.addEvent({
+        delay: 500,
+        callback: ()=>{
+          BeecolliderActive = true;
+        },
+        loop: false
+    });
+  }
+ }
+
+ function beeHIt2(){
+
+  if (!ShieldP3){
+  ReduceMana();
+  BeecolliderActive = false;
+  console.log("beeHIt!");
+
+       this.time.addEvent({
+        delay: 500,
+        callback: ()=>{
+          BeecolliderActive = true;
+        },
+        loop: false
+    });
+  }
  }
 
 
 
 function playerHitStar(){
+  ShieldP1 = true;
 console.log('starHit');
 isPlayerShielded = false;
-//shield.setPosition(player.x, player.y); 
+//shield.setPosition(player.x, player.y);
+star.setPosition(3500, star.y);
 
 this.time.addEvent({
   delay: 5000,
   callback: ()=>{
     isPlayerShielded = true;
     shield.setPosition(1000, 1000); 
+    ShieldP1 = false;
   },
   loop: false
 });
@@ -759,15 +823,19 @@ this.time.addEvent({
 }
 
  function player1HitStar(){
+
+
   console.log('star2Hit');
+  ShieldP2 = true;
   isPlayer1Shielded = false;
-  
+  star.setPosition(3500, star.y);
   
   this.time.addEvent({
     delay: 5000,
     callback: ()=>{
       isPlayer1Shielded = true;
       shield.setPosition(1000, 1000); 
+      ShieldP2 = false;
     },
     loop: false
   });
@@ -775,18 +843,31 @@ this.time.addEvent({
 }
 
 function player2HitStar(){
+
+  ShieldP3 = true;
   console.log('star2Hit');
   isPlayer2Shielded = false;
   
-  
+  star.setPosition(3500, star.y);
   this.time.addEvent({
     delay: 5000,
     callback: ()=>{
       isPlayer2Shielded = true;
       shield.setPosition(1000, 1000); 
+      ShieldP3 = false;
     },
     loop: false
   });
  }
 
+
+function resetStar()
+{
+
+  if(star.x < -700)
+  {
+    star.setPosition(2000,star.y);
+  }
+
+}
  
