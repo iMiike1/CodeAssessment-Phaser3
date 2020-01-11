@@ -16,8 +16,6 @@ import starImg  from "./assets/star.png";
 import shieldImg from "./assets/shield.png";
 import dudeImg from "./assets/dude.png";
 
-//import Menu from "./menu";
-
 
 
 
@@ -83,7 +81,6 @@ var stones;
 var stone1, stone2;
 
 var EnemyBee;
-
 var cherries;
 var cherry;
 var cherry1;
