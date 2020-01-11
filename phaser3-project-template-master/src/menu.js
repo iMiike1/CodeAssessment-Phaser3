@@ -1,0 +1,1 @@
+    var Menu = new Phaser.Game(config);

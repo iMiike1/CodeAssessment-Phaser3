@@ -14,6 +14,12 @@ import manaholderImg from "./assets/manaBarContour.png";
 import cherryImg  from "./assets/cherry.png";
 import starImg  from "./assets/star.png";
 import shieldImg from "./assets/shield.png";
+import dudeImg from "./assets/dude.png";
+
+//import Menu from "./menu";
+
+
+
 
 var config = {
   type: Phaser.AUTO,
@@ -42,15 +48,15 @@ var config = {
 var game = new Phaser.Game(config);
 
 function preload() {
-
+    
   this.load.image('grass', grassImg);
   this.load.image('player', playerImg);
   this.load.image('platform', platformImg);
   this.load.image('background', backgroundImg);
   this.load.image('bush', bushImg); 
-  this.load.image('bush2', bush2Img);  
-  this.load.image('bush3', bush3Img);  
-  this.load.image('fence', fenceImg);
+  this.load.image('bush2', bush2Img); 
+  this.load.image('bush3', bush3Img);
+  this.load.image('fence', fenceImg); 
   this.load.image('bee', beeImg);
   this.load.image('stone', stoneImg);
   this.load.image('manaBar', manabarImg);
@@ -58,6 +64,7 @@ function preload() {
   this.load.image('cherry', cherryImg);
   this.load.image('stars', starImg);
   this.load.image('shield', shieldImg);
+
 }
 
 
@@ -94,8 +101,6 @@ var isPlayer2Shielded = true;
 var ShieldP1 = false;
 var ShieldP2 = false;
 var ShieldP3 = false;
-
-
 
 
 var star;
@@ -183,7 +188,7 @@ this.input.enabled = true;
 
    platform = this.physics.add.staticImage(380,260, 'platform');
 
-   player = this.physics.add.image(350, 150, 'player');
+   player = this.physics.add.image(350, 150,'player');
    player.body.allowGravity = true;
    player.setBounce(0.2);
    player.setCollideWorldBounds(true);
@@ -201,7 +206,7 @@ this.input.enabled = true;
    player2.setBounce(0.2);
    player2.setCollideWorldBounds(true);
    player2.setInteractive();
-
+ 
   
    shield = this.physics.add.image(1000, 1000,'shield');
    shield.body.allowGravity = false;
@@ -238,7 +243,8 @@ this.input.enabled = true;
      loop: -1
      
     });
-    this.tweens.add({
+
+  this.tweens.add({
       targets: grass2,
       x: -380,
        duration: 5000,
@@ -246,7 +252,7 @@ this.input.enabled = true;
        
       });
 
-    this.tweens.add({
+  this.tweens.add({
       targets: bg,
     x: 380,
     duration: 32000,
@@ -254,14 +260,13 @@ this.input.enabled = true;
       
     });
 
-    this.tweens.add({
+  this.tweens.add({
       targets: bg2,
     x: -380,
     duration: 32000,
     loop: -1
       
-    });
-    
+    });    
 
     //cursors = this.input.keyboard.createCursorKeys();
     jumpButton = this.input.keyboard.addKey('SPACE');
@@ -298,37 +303,30 @@ this.input.enabled = true;
 
 function setupBushes1()
 {
-  var bushes1C = Bushes.getChildren();
-
+  var bushes1C = Bushes.getChildren();  
   for (var i = 0; i <bushes1C.length; i++)
   {
    bushes1C[i].body.allowGravity = false;
    bushes1C[i].enableBody = false;  
-   bushes1C[i].setVelocity(-150,0);
-   
-  }
- 
+   bushes1C[i].setVelocity(-150,0);   
+  } 
 }
 
 function setupBushes2()
 {
   var bushes2C = Bushes2.getChildren();
-
   for (var i = 0; i < bushes2C.length; i++)
   {
    bushes2C[i].body.allowGravity = false;
    bushes2C[i].enableBody = false;  
-   bushes2C[i].setVelocity(-130,0);
-   
-  }
- 
+   bushes2C[i].setVelocity(-130,0);   
+  } 
 }
 
 
 function setupBushes3()
 {
   var bushes3C = Bushes3.getChildren();
-
   for (var i = 0; i < bushes3C.length; i++)
   {
     bushes3C[i].body.allowGravity = false;
@@ -341,9 +339,7 @@ function setupBushes3()
 
 function setupFences()
 {
-
   var FencesC = Fences.getChildren();
-
   for (var i = 0; i < FencesC.length; i++)
   {
     FencesC[i].body.allowGravity = false;
@@ -356,16 +352,12 @@ function setupFences()
 function setupStones()
 {
   var stonesC = stones.getChildren();
-
   for (var i = 0; i< stonesC.length; i++)
   {
     stonesC[i].body.allowGravity = false;
     stonesC[i].enableBody = true;
     stonesC[i].setVelocity(-200,0);
-
   }
-
-
 }
 
 
@@ -376,10 +368,8 @@ function setupCherries()
   {
       cherriesC[i].body.allowGravity = false;
       cherriesC[i].enableBody = false;
-      cherriesC[i].setVelocity(-200,0);
-      
+      cherriesC[i].setVelocity(-200,0);      
   }
-
 }
 
 
@@ -388,23 +378,19 @@ function setupCherries()
 
 
 //Update Function
-  function update(){ 
-   
+  function update(){  
    
 
   if (!isPlayerShielded)
   {
     shield.setPosition(player.x, player.y);
-
   }
   else if (!isPlayer1Shielded)
   {
     shield.setPosition(player1.x, player1.y);
-
   }
  else if (!isPlayer2Shielded)
  {
-
   shield.setPosition(player2.x, player2.y);
  }
 
@@ -415,8 +401,7 @@ function setupCherries()
    
     player.on('pointerover',function(){
     if (player.body.touching.down)
-    {
- 
+    { 
       player.body.velocity.y = -400;
     }
 })
@@ -424,7 +409,6 @@ function setupCherries()
 player1.on('pointerover',function(){
   if (player1.body.touching.down)
   {
-
     player1.body.velocity.y = -400;
   }
 })
@@ -432,17 +416,12 @@ player1.on('pointerover',function(){
 player2.on('pointerover',function(){
   if (player2.body.touching.down)
   {
-
     player2.body.velocity.y = -400;
   }
 })
 
-
-
-    if (jumpButton.isDown){
-    
-      player.body.velocity.y = -400;
- 
+    if (jumpButton.isDown){    
+      player.body.velocity.y = -400; 
     }
  
 iterateChildrens1();
@@ -452,88 +431,65 @@ iterateFences();
 iterateBees();
 iterateStones();
 resetStar();
-
-
-  }
+}
 
 function iterateChildrens1()
 {
   var bushes1C = Bushes.getChildren();
-
   for (var i = 0; i < bushes1C.length; i++)
   {
     if (bushes1C[i].x < -300)
     {
       bushes1C[i].setPosition(Phaser.Math.RND.between(800,1200),200);
-    }
-   
+    }   
  }
-
 }
 
 function iterateChildrens2()
 {
-
-  var bushes2C = Bushes2.getChildren();
-
+    var bushes2C = Bushes2.getChildren();
   for (var i = 0; i<bushes2C.length; i++)
   {
     if (bushes2C[i].x < -300)
     {
       bushes2C[i].setPosition(Phaser.Math.RND.between(750,1800),230);
-    }
-    
+    }    
   }
-
 }
 
 function iterateChildrens3()
 {
-
   var bushes3C = Bushes3.getChildren();
-
   for (var i = 0; i<bushes3C.length; i++)
   {
     if (bushes3C[i].x < -300)
     {
       bushes3C[i].setPosition(Phaser.Math.RND.between(750,2500),240);
-
     }
-
   }
-
 }
 
 function iterateFences()
 {
-
   var fencesC = Fences.getChildren();
-
   for (var i=0; i < fencesC.length; i++)
-  {
-  
+  { 
     if (fencesC[i].x < -300)
     {
       fencesC[i].setPosition(Phaser.Math.RND.between(1000,2000), 200);
-
     }
-
   }
-
 }
  
 
 
 function iterateStones()
-{
-   
+{   
   var stonesC = stones.getChildren();
-
   for (var i = 0; i< stonesC.length; i++)
   {if (stonesC[i].x < -300)
     {
-    stonesC[i].setPosition(Phaser.Math.RND.between(1000,4000), stonesC[i].y);
-    
+    stonesC[i].setPosition(Phaser.Math.RND.between(1000,4000), stonesC[i].y);  
 
     }
   }
@@ -542,7 +498,6 @@ function iterateStones()
 
 function iterateBees()
 { 
-
   if (EnemyBee.y < 120)
   {
     EnemyBee.setVelocityY(10);
@@ -586,7 +541,7 @@ function Stone1Hit1()
   this.time.addEvent({
     delay:100,
     callback: ()=>{
-      StonecolliderActive = true;
+    StonecolliderActive = true;
     },
     loop: false
 });
@@ -598,7 +553,6 @@ function Stone1Hit2()
   ReduceMana();
   StonecolliderActive = false;   
   player2.body.velocity.y = -250;
-
   this.time.addEvent({
     delay:100,
     callback: ()=>{
@@ -646,7 +600,6 @@ function Stone2Hit2()
   ReduceMana();
   StonecolliderActive = false;   
   player2.body.velocity.y = -250;
-
   this.time.addEvent({
     delay:100,
     callback: ()=>{
@@ -668,8 +621,6 @@ function cherryHitMessage()
 {
   cherryCounter++;
   cherryColliderActive = false;
-  console.log('cherryhit');
-
        this.time.addEvent({
         delay: 1000,
         callback: ()=>{
@@ -688,8 +639,7 @@ function cherryHitMessage()
       break;
       case 3:
         increaseMana();
-      cherryResetPositionAndScale();
-      
+      cherryResetPositionAndScale();      
       cherryCounter = 0;
       break;     
     }
@@ -699,9 +649,7 @@ function cherryHitMessage()
 function cherry1HitMessage()
 {
   cherry1Counter++;
-  cherry1ColliderActive = false;
-  console.log('cherryhit');
-
+  cherry1ColliderActive = false;  
        this.time.addEvent({
         delay: 1000,
         callback: ()=>{
@@ -710,8 +658,7 @@ function cherry1HitMessage()
         loop: false
     });
 
-    switch(cherry1Counter){
-      
+    switch(cherry1Counter){      
       case 1: 
       cherry1.setScale(0.7);
       break;
@@ -730,20 +677,17 @@ function cherryResetPositionAndScale()
 {
   cherry.setPosition(800, cherry.y);
   cherry.setScale(1);
-
 }
 
 function cherry1ResetPositionAndScale()
 {
   cherry1.setPosition(800, cherry.y);
   cherry1.setScale(1);
-
 }
 
 function increaseMana()
 {
-  percentage += 0.05; 
-
+  percentage += 0.05;
 }
 
 
@@ -756,8 +700,6 @@ function increaseMana()
    if (!ShieldP1){
   ReduceMana();
   BeecolliderActive = false;
-  console.log("beeHIt!");
-
        this.time.addEvent({
         delay: 500,
         callback: ()=>{
@@ -773,7 +715,6 @@ function increaseMana()
   ReduceMana();
   BeecolliderActive = false;
   console.log("beeHIt!");
-
        this.time.addEvent({
         delay: 500,
         callback: ()=>{
@@ -790,7 +731,6 @@ function increaseMana()
   ReduceMana();
   BeecolliderActive = false;
   console.log("beeHIt!");
-
        this.time.addEvent({
         delay: 500,
         callback: ()=>{
@@ -807,9 +747,7 @@ function playerHitStar(){
   ShieldP1 = true;
 console.log('starHit');
 isPlayerShielded = false;
-//shield.setPosition(player.x, player.y);
 star.setPosition(3500, star.y);
-
 this.time.addEvent({
   delay: 5000,
   callback: ()=>{
@@ -828,8 +766,7 @@ this.time.addEvent({
   console.log('star2Hit');
   ShieldP2 = true;
   isPlayer1Shielded = false;
-  star.setPosition(3500, star.y);
-  
+  star.setPosition(3500, star.y);  
   this.time.addEvent({
     delay: 5000,
     callback: ()=>{
