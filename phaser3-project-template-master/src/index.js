@@ -21,34 +21,72 @@ import dudeImg from "./assets/dude.png";
 
 
 
-var config = {
-  type: Phaser.AUTO,
-    width: 760,
-  height: 260,
-  parent : 'phaser-example',
-  physics: {
-    default: 'arcade',
-    fps: 60,
-    arcade: {
-        gravity: { y: 750 },
-        debug: true
-    }
-
-  },
-    
-  scene: {
-    menu: Demo,
-    preload: preload,
-    create: create,
-    update: update
-  }
-};
 
 
+
+
+
+
+var GameScene = new Phaser.Class({
 // eslint-disable-next-line no-unused-vars
-var game = new Phaser.Game(config);
 
-function preload() {
+
+var player, player1, player2;
+  var platform = null;
+  var jumpButton = null;
+  //var cursors = null;
+  
+  var Bushes,Bushes2,Bushes3;
+  
+  var Bush1,Bush2,Bush3,Bush4,Bush5,Bush6,Bush7,Bush8,Bush9;
+  
+  var stones;
+  var stone1, stone2;
+  
+  var EnemyBee;
+  
+  var cherries;
+  var cherry;
+  var cherry1;
+  var cherryColliderActive = true;
+  var cherry1ColliderActive = true;
+  var cherryCounter =0;
+  var cherry1Counter =0;
+  
+  
+  //determines if the shield is taken or not the shield to the player
+  var isPlayerShielded = true; 
+  var isPlayer1Shielded = true;
+  var isPlayer2Shielded = true;
+  
+  //determines if the player should take damage or not
+  var ShieldP1 = false;
+  var ShieldP2 = false;
+  var ShieldP3 = false;
+  
+  var star;
+  var shield;
+  var Fences;
+  var fence1, fence2; 
+  
+  
+  var BeecolliderActive = true;
+  var StonecolliderActive = true;
+  
+  var mana, manaholder;
+  var percentage = 1;
+
+
+Extends: Phaser.Scene,
+initialize:
+
+function GameScene()
+{
+  Phaser.Scene.call(this, {key: 'GameScene'});
+},
+
+
+preload: function() {
     
   this.load.image('grass', grassImg);
   this.load.image('player', playerImg);
@@ -66,61 +104,16 @@ function preload() {
   this.load.image('stars', starImg);
   this.load.image('shield', shieldImg);
 
-}
+},
 
 
-var player, player1, player2;
-var platform = null;
-var jumpButton = null;
-//var cursors = null;
-
-var Bushes,Bushes2,Bushes3;
 
 
-var Bush1,Bush2,Bush3,Bush4,Bush5,Bush6,Bush7,Bush8,Bush9;
-
-var stones;
-var stone1, stone2;
-
-var EnemyBee;
-
-var cherries;
-var cherry;
-var cherry1;
-var cherryColliderActive = true;
-var cherry1ColliderActive = true;
-var cherryCounter =0;
-var cherry1Counter =0;
 
 
-//determines if the shield is taken or not the shield to the player
-var isPlayerShielded = true; 
-var isPlayer1Shielded = true;
-var isPlayer2Shielded = true;
-
-//determines if the player should take damage or not
-var ShieldP1 = false;
-var ShieldP2 = false;
-var ShieldP3 = false;
-
-
-var star;
-var shield;
-var Fences;
-var fence1, fence2;
- 
-//var Bush2;
-
-var BeecolliderActive = true;
-
-
-var StonecolliderActive = true;
-
-var mana, manaholder;
-var percentage = 1;
 //Create Function
-function create() {
-
+create: function() {
+    
 var offset = 380;
 
 this.input.enabled = true;
@@ -299,10 +292,10 @@ this.input.enabled = true;
     this.physics.add.overlap(player, star, playerHitStar, ()=>{return isPlayerShielded;}, this );
     this.physics.add.overlap(player1, star, player1HitStar, ()=>{return isPlayer1Shielded;}, this );
     this.physics.add.overlap(player2, star, player2HitStar, ()=>{return isPlayer2Shielded;}, this );
-}
+},
 
 
-function setupBushes1()
+ setupBushes1: function()
 {
   var bushes1C = Bushes.getChildren();  
   for (var i = 0; i <bushes1C.length; i++)
@@ -311,9 +304,9 @@ function setupBushes1()
    bushes1C[i].enableBody = false;  
    bushes1C[i].setVelocity(-150,0);   
   } 
-}
+},
 
-function setupBushes2()
+setupBushes2: function ()
 {
   var bushes2C = Bushes2.getChildren();
   for (var i = 0; i < bushes2C.length; i++)
@@ -322,10 +315,10 @@ function setupBushes2()
    bushes2C[i].enableBody = false;  
    bushes2C[i].setVelocity(-130,0);   
   } 
-}
+},
 
 
-function setupBushes3()
+setupBushes3: function ()
 {
   var bushes3C = Bushes3.getChildren();
   for (var i = 0; i < bushes3C.length; i++)
@@ -335,10 +328,10 @@ function setupBushes3()
     bushes3C[i].setVelocity(-110,0);
   }
 
-}
+},
 
 
-function setupFences()
+setupFences: function ()
 {
   var FencesC = Fences.getChildren();
   for (var i = 0; i < FencesC.length; i++)
@@ -347,10 +340,10 @@ function setupFences()
     FencesC[i].enableBody = false;  
     FencesC[i].setVelocity(-110,0);
   }
-}
+},
 
 
-function setupStones()
+setupStones: function ()
 {
   var stonesC = stones.getChildren();
   for (var i = 0; i< stonesC.length; i++)
@@ -359,10 +352,10 @@ function setupStones()
     stonesC[i].enableBody = true;
     stonesC[i].setVelocity(-200,0);
   }
-}
+},
 
 
-function setupCherries()
+setupCherries: function ()
 {
   var cherriesC = cherries.getChildren();
   for (var i = 0; i < cherriesC.length; i++)
@@ -371,7 +364,7 @@ function setupCherries()
       cherriesC[i].enableBody = false;
       cherriesC[i].setVelocity(-200,0);      
   }
-}
+},
 
 
 
@@ -379,7 +372,7 @@ function setupCherries()
 
 
 //Update Function
-  function update(){  
+update: function (){  
    
 
   if (!isPlayerShielded)
@@ -432,9 +425,9 @@ iterateFences();
 iterateBees();
 iterateStones();
 resetStar();
-}
+},
 
-function iterateChildrens1()
+iterateChildrens1: function ()
 {
   var bushes1C = Bushes.getChildren();
   for (var i = 0; i < bushes1C.length; i++)
@@ -444,9 +437,9 @@ function iterateChildrens1()
       bushes1C[i].setPosition(Phaser.Math.RND.between(800,1200),200);
     }   
  }
-}
+},
 
-function iterateChildrens2()
+iterateChildrens2: function ()
 {
     var bushes2C = Bushes2.getChildren();
   for (var i = 0; i<bushes2C.length; i++)
@@ -456,9 +449,9 @@ function iterateChildrens2()
       bushes2C[i].setPosition(Phaser.Math.RND.between(750,1800),230);
     }    
   }
-}
+},
 
-function iterateChildrens3()
+iterateChildrens3: function ()
 {
   var bushes3C = Bushes3.getChildren();
   for (var i = 0; i<bushes3C.length; i++)
@@ -468,9 +461,9 @@ function iterateChildrens3()
       bushes3C[i].setPosition(Phaser.Math.RND.between(750,2500),240);
     }
   }
-}
+},
 
-function iterateFences()
+iterateFences: function ()
 {
   var fencesC = Fences.getChildren();
   for (var i=0; i < fencesC.length; i++)
@@ -480,11 +473,11 @@ function iterateFences()
       fencesC[i].setPosition(Phaser.Math.RND.between(1000,2000), 200);
     }
   }
-}
+},
  
 
 
-function iterateStones()
+iterateStones: function ()
 {   
   var stonesC = stones.getChildren();
   for (var i = 0; i< stonesC.length; i++)
@@ -494,10 +487,10 @@ function iterateStones()
 
     }
   }
-}
+},
 
 
-function iterateBees()
+iterateBees: function ()
 { 
   if (EnemyBee.y < 120)
   {
@@ -513,10 +506,10 @@ function iterateBees()
 
   }
 
-}
+},
  
 
-function Stone1Hit()
+Stone1Hit: function ()
 {
 if (!ShieldP1){
   ReduceMana();
@@ -531,9 +524,9 @@ if (!ShieldP1){
 });
 
 }
-}
+},
 
-function Stone1Hit1()
+Stone1Hit1: function ()
 {
   if (!ShieldP2){
   ReduceMana();
@@ -547,8 +540,9 @@ function Stone1Hit1()
     loop: false
 });
   }
-}
-function Stone1Hit2()
+},
+
+Stone1Hit2: function ()
 {
   if (!ShieldP3){
   ReduceMana();
@@ -562,9 +556,9 @@ function Stone1Hit2()
     loop: false
 });
   }
-}
+},
 
-function Stone2Hit()
+Stone2Hit: function ()
 {
   if (!ShieldP1){
   ReduceMana();
@@ -578,9 +572,9 @@ function Stone2Hit()
     loop: false
 });
   }
-}
+},
 
-function Stone2Hit1()
+Stone2Hit1: function ()
 {
   if (!ShieldP2){
   ReduceMana();
@@ -594,8 +588,9 @@ function Stone2Hit1()
     loop: false
 });
   }
-}
-function Stone2Hit2()
+},
+
+Stone2Hit2: function ()
 {
   if (!ShieldP3){
   ReduceMana();
@@ -609,16 +604,16 @@ function Stone2Hit2()
     loop: false
 });
   }
-}
+},
 
 
-function ReduceMana()
+ReduceMana: function ()
 {
   percentage -= 0.01;
-}
+},
 
 
-function cherryHitMessage()
+cherryHitMessage: function ()
 {
   cherryCounter++;
   cherryColliderActive = false;
@@ -644,10 +639,10 @@ function cherryHitMessage()
       cherryCounter = 0;
       break;     
     }
-}
+},
 
 
-function cherry1HitMessage()
+cherry1HitMessage: function ()
 {
   cherry1Counter++;
   cherry1ColliderActive = false;  
@@ -672,24 +667,24 @@ function cherry1HitMessage()
       cherry1Counter = 0;
       break;     
     }
-}
+},
 
-function cherryResetPositionAndScale()
+cherryResetPositionAndScale: function ()
 {
   cherry.setPosition(800, cherry.y);
   cherry.setScale(1);
-}
+},
 
-function cherry1ResetPositionAndScale()
+cherry1ResetPositionAndScale: function ()
 {
   cherry1.setPosition(800, cherry.y);
   cherry1.setScale(1);
-}
+},
 
-function increaseMana()
+increaseMana: function ()
 {
   percentage += 0.05;
-}
+},
 
 
 
@@ -697,7 +692,7 @@ function increaseMana()
 //If related player shield (SHIELDP) is turned off then reduce mana and allow bee collision again after 500ms
 
 
- function beeHIt(){
+beeHIt: function (){
    if (!ShieldP1){
   ReduceMana();
   BeecolliderActive = false;
@@ -709,9 +704,9 @@ function increaseMana()
         loop: false
     });
   }
- }
+ },
 
- function beeHIt1(){
+beeHIt1: function (){
    if (!ShieldP2){
   ReduceMana();
   BeecolliderActive = false;
@@ -724,9 +719,9 @@ function increaseMana()
         loop: false
     });
   }
- }
+ },
 
- function beeHIt2(){
+beeHIt2: function (){
 
   if (!ShieldP3){
   ReduceMana();
@@ -740,11 +735,11 @@ function increaseMana()
         loop: false
     });
   }
- }
+ },
 
 
 
-function playerHitStar(){
+ playerHitStar: function (){
   ShieldP1 = true;
 console.log('starHit');
 isPlayerShielded = false;
@@ -758,10 +753,9 @@ this.time.addEvent({
   },
   loop: false
 });
+},
 
-}
-
- function player1HitStar(){
+player1HitStar: function (){
 
 
   console.log('star2Hit');
@@ -778,9 +772,9 @@ this.time.addEvent({
     loop: false
   });
 
-}
+},
 
-function player2HitStar(){
+player2HitStar: function (){
 
   ShieldP3 = true;
   console.log('star2Hit');
@@ -796,58 +790,36 @@ function player2HitStar(){
     },
     loop: false
   });
- }
+ },
 
 
-function resetStar()
+ resetStar: function ()
 {
-
   if(star.x < -700)
   {
     star.setPosition(2000,star.y);
   }
-
 }
- 
-
-
-
-
-var Demo = new Phaser.Class({
-
-  Extends: Phaser.Scene,
-
-  initialize:
-
-  function Demo ()
-  {
-      Phaser.Scene.call(this, { key: 'demo', active: true });
-  },
-
-  preload: function ()
-  {
-      this.load.image('arrow', 'assets/sprites/longarrow.png');
-  },
-
-  create: function ()
-  {
-      this.arrow = this.add.image(400, 300, 'arrow').setOrigin(0, 0.5);
-  },
-
-  update: function (time, delta)
-  {
-      this.arrow.rotation += 0.01;
-  }
-
 });
+
+
 
 var config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
-  backgroundColor: '#000000',
-  parent: 'phaser-example',
-  scene: [ Demo ]
+    width: 760,
+  height: 260,
+  parent : 'phaser-example',
+  physics: {
+    default: 'arcade',
+    fps: 60,
+    arcade: {
+        gravity: { y: 750 },
+        debug: true
+    }
+
+  },
+    
+  scene: [GameScene]
 };
 
 var game = new Phaser.Game(config);
