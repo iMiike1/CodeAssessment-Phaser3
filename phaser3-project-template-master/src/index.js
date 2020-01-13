@@ -18,75 +18,85 @@ import dudeImg from "./assets/dude.png";
 
 //import Menu from "./menu";
 
-
-
-
-
-
-
-
-
-
-var GameScene = new Phaser.Class({
+class Controller extends Phaser.Scene{
 // eslint-disable-next-line no-unused-vars
 
+constructor()
+{
+    
+      super('Controller');
 
-var player, player1, player2;
-  var platform = null;
-  var jumpButton = null;
-  //var cursors = null;
+
+this.active;
+this.CurrentScene;
+
+  this.player;
+  this.player1;
+  this.player2;
+  this.platform = null;
+  this.jumpButton = null;
+  this.cursors = null;
+   
+  this.Bushes;
+  this.Bushes2;
+  this.Bushes3;
+ 
+  this.Bush1;
+  this.Bush2;
+  this.Bush3;
+  this.Bush4;
+  this.Bush5;
+  this.bush6;
+  this.Bush7;
+  this.Bush8;
+  this.Bush9;
+
+  this.stones;
+  this.stone1;
+  this.stone2;
+
   
-  var Bushes,Bushes2,Bushes3;
+  this.EnemyBee;
   
-  var Bush1,Bush2,Bush3,Bush4,Bush5,Bush6,Bush7,Bush8,Bush9;
+
+  this.cherries;
+  this.cherry;
+  this.cherry1;
+
+  this.cherryColliderActive = true;
+  this.cherry1ColliderActive = true;
   
-  var stones;
-  var stone1, stone2;
-  
-  var EnemyBee;
-  
-  var cherries;
-  var cherry;
-  var cherry1;
-  var cherryColliderActive = true;
-  var cherry1ColliderActive = true;
-  var cherryCounter =0;
-  var cherry1Counter =0;
-  
+  this.cherryCounter = 0;
+  this.cherry1Counter = 0;
+ 
   
   //determines if the shield is taken or not the shield to the player
-  var isPlayerShielded = true; 
-  var isPlayer1Shielded = true;
-  var isPlayer2Shielded = true;
+  this.isPlayerShielded = true; 
+  this.isPlayer1Shielded = true;
+  this.isPlayer2Shielded = true;
   
   //determines if the player should take damage or not
-  var ShieldP1 = false;
-  var ShieldP2 = false;
-  var ShieldP3 = false;
+  this.ShieldP1 = false;
+  this.ShieldP2 = false;
+  this.ShieldP3 = false;
   
-  var star;
-  var shield;
-  var Fences;
-  var fence1, fence2; 
+  this.star;
+  this.shield;
+  this.Fences;
+  this.fence1;
+  this.fence2; 
   
   
-  var BeecolliderActive = true;
-  var StonecolliderActive = true;
+  this.BeecolliderActive = true;
+  this.StonecolliderActive = true;
   
-  var mana, manaholder;
-  var percentage = 1;
+  this.mana;
+  this.manaholder;
+  this.percentage = 1;
 
+}
 
-Extends: Phaser.Scene,
-initialize:
-
-function GameScene()
-{
-  Phaser.Scene.call(this, {key: 'GameScene'});
-},
-
-
-preload: function() {
+preload() {
     
   this.load.image('grass', grassImg);
   this.load.image('player', playerImg);
@@ -104,134 +114,129 @@ preload: function() {
   this.load.image('stars', starImg);
   this.load.image('shield', shieldImg);
 
-},
-
-
-
-
-
+}
 
 //Create Function
-create: function() {
+create() {
     
-var offset = 380;
-
+this.offset = 380;
+this.input.activePointer;
 this.input.enabled = true;
 
-   var bg = this.add.image(760 +offset, 130, "background");
-   var bg2 = this.add.image(0 +offset, 130, "background");
+   this.bg = this.add.image(760 +this.offset, 130, "background");
+   this.bg2 = this.add.image(0 +this.offset, 130, "background");
 
-   Bushes = this.add.group();
-   Bushes2 = this.add.group();
-   Bushes3 = this.add.group();
-   Fences = this.add.group();
-   stones = this.add.group();
-   cherries = this.add.group();
+   this.Bushes = this.add.group();
+   this.Bushes2 = this.add.group();
+   this.Bushes3 = this.add.group();
+   this.Fences = this.add.group();
+   this.stones = this.add.group();
+   this.cherries = this.add.group();
 
 
 
-   Bush9 = this.physics.add.image(800,240,'bush3');
-   Bush8 = this.physics.add.image(2000,240,'bush3'); 
-   Bush7 = this.physics.add.image(1020,240,'bush3');
+   this.Bush9 = this.physics.add.image(800,240,'bush3');
+   this.Bush8 = this.physics.add.image(2000,240,'bush3'); 
+   this.Bush7 = this.physics.add.image(1020,240,'bush3');
   
-   Bush4 = this.physics.add.image(1950,230,'bush2');
-   Bush5 = this.physics.add.image(1230,230,'bush2');
-   Bush6 = this.physics.add.image(930,230,'bush2');
+   this.Bush4 = this.physics.add.image(1950,230,'bush2');
+   this.Bush5 = this.physics.add.image(1230,230,'bush2');
+   this.Bush6 = this.physics.add.image(930,230,'bush2');
 
-   fence1 = this.physics.add.image(1000, 200,'fence');
-   fence2 = this.physics.add.image(650, 200,'fence');
+   this.fence1 = this.physics.add.image(1000, 200,'fence');
+   this.fence2 = this.physics.add.image(650, 200,'fence');
 
-   Bush1 = this.physics.add.image(1200, 200,'bush'); 
-   Bush2 = this.physics.add.image(500, 200,'bush');
-   Bush3 = this.physics.add.image(1800, 200,'bush'); 
+   this.Bush1 = this.physics.add.image(1200, 200,'bush'); 
+   this.Bush2 = this.physics.add.image(500, 200,'bush');
+   this.Bush3 = this.physics.add.image(1800, 200,'bush'); 
 
-  stone1 = this.physics.add.image(500,230,'stone');
-  stone2 = this.physics.add.image(1500,230,'stone');
+   this.stone1 = this.physics.add.image(500,230,'stone');
+   this.stone2 = this.physics.add.image(1500,230,'stone');
 
-  EnemyBee = this.physics.add.image(500,130,'bee');
-  EnemyBee.enableBody = false;
-  EnemyBee.body.allowGravity = false;
-  EnemyBee.setVelocity(-80,-10);
+   this.EnemyBee = this.physics.add.image(500,130,'bee');
+   this.EnemyBee.enableBody = false;
+   this.EnemyBee.body.allowGravity = false;
+   this.EnemyBee.setVelocity(-80,-10);
 
 
-   Bushes.add(Bush1);
-   Bushes.add(Bush2);
-   Bushes.add(Bush3);
+   this.Bushes.add(this.Bush1);
+   this.Bushes.add(this.Bush2);
+   this.Bushes.add(this.Bush3);
 
-   Bushes2.add(Bush4);
-   Bushes2.add(Bush5); 
-   Bushes2.add(Bush6);
+   this.Bushes2.add(this.Bush4);
+   this.Bushes2.add(this.Bush5); 
+   this.Bushes2.add(this.Bush6);
   
-   Bushes3.add(Bush7);
-   Bushes3.add(Bush8);
-   Bushes3.add(Bush9);
+   this.Bushes3.add(this.Bush7);
+   this.Bushes3.add(this.Bush8);
+   this.Bushes3.add(this.Bush9);
 
-  Fences.add(fence1);
-  Fences.add(fence2);
+   this.Fences.add(this.fence1);
+  this.Fences.add(this.fence2);
 
-   stones.add(stone1);
-  stones.add(stone2);
+  this.stones.add(this.stone1);
+  this.stones.add(this.stone2);
 
-  setupBushes1();
-  setupBushes2();
-  setupBushes3();
-  setupFences();
-  setupStones();
+  this.setupBushes1();
+  this.setupBushes2();
+  this.setupBushes3();
+  this.setupFences();
+  this.setupStones();
   
 
 
-   platform = this.physics.add.staticImage(380,260, 'platform');
+  this.platform = this.physics.add.staticImage(380,260, 'platform');
 
-   player = this.physics.add.image(350, 150,'player');
-   player.body.allowGravity = true;
-   player.setBounce(0.2);
-   player.setCollideWorldBounds(true);
-   player.setInteractive();
+  this.player = this.physics.add.image(350, 150,'player');
+  this.player.body.allowGravity = true;
+  this.player.setBounce(0.2);
+  this.player.setCollideWorldBounds(true);
+  this.player.setInteractive();
 
-   player1 = this.physics.add.image(player.x - 80, 150, 'player');
-   player1.body.allowGravity = true;
-   player1.setBounce(0.2);
-   player1.setCollideWorldBounds(true);
-   player1.setInteractive();
+  this.player1 = this.physics.add.image(this.player.x - 80, 150, 'player');
+  this.player1.body.allowGravity = true;
+  this.player1.setBounce(0.2);
+  this.player1.setCollideWorldBounds(true);
+  this.player1.setInteractive();
 
 
-   player2 = this.physics.add.image(player.x + 80, 150, 'player');
-   player2.body.allowGravity = true;
-   player2.setBounce(0.2);
-   player2.setCollideWorldBounds(true);
-   player2.setInteractive();
+  this.player2 = this.physics.add.image(this.player.x + 80, 150, 'player');
+  this.player2.body.allowGravity = true;
+  this.player2.setBounce(0.2);
+  this.player2.setCollideWorldBounds(true);
+  this.player2.setInteractive();
  
   
-   shield = this.physics.add.image(1000, 1000,'shield');
-   shield.body.allowGravity = false;
-   shield.enableBody = false;
+  this.shield = this.physics.add.image(1000, 1000,'shield');
+  this.shield.body.allowGravity = false;
+  this.shield.enableBody = false;
 
 
-   var grass = this.add.image(760 +offset, 237, 'grass');
-   var grass2 = this.add.image(0  +offset, 237, 'grass');
+  this.grass = this.add.image(760 +this.offset, 237, 'grass');
+  this.grass2 = this.add.image(0  +this.offset, 237, 'grass');
     
 
   
-  cherry = this.physics.add.image(700,130,'cherry');
-  cherry1 = this.physics.add.image(1400,130,'cherry');
-  cherries.add(cherry);
-  cherries.add(cherry1);
+  this.cherry = this.physics.add.image(700,130,'cherry');
+  this.cherry1 = this.physics.add.image(1400,130,'cherry');
+  this.cherries.add(this.cherry);
+  this.cherries.add(this.cherry1);
 
-  setupCherries();
+  this.setupCherries();
  
-  mana = this.add.image(700, 25,'manaBar');
-  mana.scaleX = percentage;
-  mana.setOrigin(1,0);
-  manaholder = this.add.image(mana.x,mana.y,'manaHolder');
-  manaholder.setOrigin(1,0);
+  this.mana = this.add.image(700, 25,'manaBar');
+  this.mana.scaleX = this.percentage;
+  this.mana.setOrigin(1,0);
+  this.manaholder = this.add.image(this.mana.x,this.mana.y,'manaHolder');
+  this.manaholder.setOrigin(1,0);
 
-  star = this.physics.add.image(750,150,'stars');
-  star.body.allowGravity = false;
-  star.enableBody = false;
-  star.body.setVelocity(-150,0);
+  this.star = this.physics.add.image(750,150,'stars');
+  this.star.body.allowGravity = false;
+  this.star.enableBody = false;
+  this.star.body.setVelocity(-150,0);
 
   this.tweens.add({
-    targets: grass, 
+    targets: this.grass, 
      x: 380,
      duration: 5000,
      loop: -1
@@ -239,7 +244,7 @@ this.input.enabled = true;
     });
 
   this.tweens.add({
-      targets: grass2,
+      targets: this.grass2,
       x: -380,
        duration: 5000,
        loop: -1
@@ -247,7 +252,7 @@ this.input.enabled = true;
       });
 
   this.tweens.add({
-      targets: bg,
+      targets: this.bg,
     x: 380,
     duration: 32000,
     loop: -1
@@ -255,72 +260,76 @@ this.input.enabled = true;
     });
 
   this.tweens.add({
-      targets: bg2,
+      targets: this.bg2,
     x: -380,
     duration: 32000,
     loop: -1
       
     });    
 
-    //cursors = this.input.keyboard.createCursorKeys();
-    jumpButton = this.input.keyboard.addKey('SPACE');
+    //this.cursors = this.input.keyboard.createCursorKeys();
+    this.jumpButton = this.input.keyboard.addKey('SPACE');
 
-    this.physics.add.collider(player, platform);
-    this.physics.add.collider(player1, platform);
-    this.physics.add.collider(player2, platform);
+    this.physics.add.collider(this.player, this.platform);
+    this.physics.add.collider(this.player1, this.platform);
+    this.physics.add.collider(this.player2, this.platform);
 
-    this.physics.add.overlap(EnemyBee, player, beeHIt, ()=> { return BeecolliderActive;}, this);
-    this.physics.add.overlap(EnemyBee, player1, beeHIt1, ()=> { return BeecolliderActive;}, this);
-    this.physics.add.overlap(EnemyBee, player2, beeHIt2, ()=> { return BeecolliderActive;}, this);
+    this.physics.add.overlap(this.EnemyBee, this.player, this.beeHIt, ()=> { return this.BeecolliderActive;}, this);
+    this.physics.add.overlap(this.EnemyBee, this.player1, this.beeHIt1, ()=> { return this.BeecolliderActive;}, this);
+    this.physics.add.overlap(this.EnemyBee, this.player2, this.beeHIt2, ()=> { return this.BeecolliderActive;}, this);
 
-    this.physics.add.overlap(player, stone1, Stone1Hit, ()=>{return StonecolliderActive;}, this );
-    this.physics.add.overlap(player1, stone1, Stone1Hit1, ()=>{return StonecolliderActive;}, this );
-    this.physics.add.overlap(player2, stone1, Stone1Hit2, ()=>{return StonecolliderActive;}, this );
+    this.physics.add.overlap(this.player, this.stone1, this.Stone1Hit, ()=>{return this.StonecolliderActive;}, this );
+    this.physics.add.overlap(this.player1, this.stone1, this.Stone1Hit1, ()=>{return this.StonecolliderActive;}, this );
+    this.physics.add.overlap(this.player2, this.stone1, this.Stone1Hit2, ()=>{return this.StonecolliderActive;}, this );
 
-    this.physics.add.overlap(player, stone2, Stone2Hit, ()=>{return StonecolliderActive;}, this );
-    this.physics.add.overlap(player1, stone2, Stone2Hit1, ()=>{return StonecolliderActive;}, this );
-    this.physics.add.overlap(player2, stone2, Stone2Hit2, ()=>{return StonecolliderActive;}, this );
+    this.physics.add.overlap(this.player, this.stone2, this.Stone2Hit, ()=>{return this.StonecolliderActive;}, this );
+    this.physics.add.overlap(this.player1, this.stone2, this.Stone2Hit1, ()=>{return this.StonecolliderActive;}, this );
+    this.physics.add.overlap(this.player2, this.stone2, this.Stone2Hit2, ()=>{return this.StonecolliderActive;}, this );
 
-    this.physics.add.overlap(player, cherry, cherryHitMessage, ()=>{return cherryColliderActive;}, this );
-    this.physics.add.overlap(player1, cherry, cherryHitMessage, ()=>{return cherryColliderActive;}, this );
-    this.physics.add.overlap(player2, cherry, cherryHitMessage, ()=>{return cherryColliderActive;}, this );
+    this.physics.add.overlap(this.player, this.cherry, this.cherryHitMessage, ()=>{return this.cherryColliderActive;}, this );
+    this.physics.add.overlap(this.player1, this.cherry, this.cherryHitMessage, ()=>{return this.cherryColliderActive;}, this );
+    this.physics.add.overlap(this.player2, this.cherry, this.cherryHitMessage, ()=>{return this.cherryColliderActive;}, this );
 
-    this.physics.add.overlap(player, cherry1, cherry1HitMessage, ()=>{return cherry1ColliderActive;}, this );
-    this.physics.add.overlap(player1, cherry1, cherry1HitMessage, ()=>{return cherry1ColliderActive;}, this );
-    this.physics.add.overlap(player2, cherry1, cherry1HitMessage, ()=>{return cherry1ColliderActive;}, this );
+    this.physics.add.overlap(this.player, this.cherry1, this.cherry1HitMessage, ()=>{return this.cherry1ColliderActive;}, this );
+    this.physics.add.overlap(this.player1, this.cherry1, this.cherry1HitMessage, ()=>{return this.cherry1ColliderActive;}, this );
+    this.physics.add.overlap(this.player2, this.cherry1, this.cherry1HitMessage, ()=>{return this.cherry1ColliderActive;}, this );
 
-    this.physics.add.overlap(player, star, playerHitStar, ()=>{return isPlayerShielded;}, this );
-    this.physics.add.overlap(player1, star, player1HitStar, ()=>{return isPlayer1Shielded;}, this );
-    this.physics.add.overlap(player2, star, player2HitStar, ()=>{return isPlayer2Shielded;}, this );
-},
+    this.physics.add.overlap(this.player, this.star, this.playerHitStar, ()=>{return this.isPlayerShielded;}, this );
+    this.physics.add.overlap(this.player1, this.star, this.player1HitStar, ()=>{return this.isPlayer1Shielded;}, this );
+    this.physics.add.overlap(this.player2, this.star, this.player2HitStar, ()=>{return this.isPlayer2Shielded;}, this );
+
+    
+  console.log('Porcoddio');
+    
+}
 
 
- setupBushes1: function()
+ setupBushes1()
 {
-  var bushes1C = Bushes.getChildren();  
+  var bushes1C = this.Bushes.getChildren();  
   for (var i = 0; i <bushes1C.length; i++)
   {
    bushes1C[i].body.allowGravity = false;
    bushes1C[i].enableBody = false;  
    bushes1C[i].setVelocity(-150,0);   
   } 
-},
+}
 
-setupBushes2: function ()
+setupBushes2()
 {
-  var bushes2C = Bushes2.getChildren();
+  var bushes2C = this.Bushes2.getChildren();
   for (var i = 0; i < bushes2C.length; i++)
   {
    bushes2C[i].body.allowGravity = false;
    bushes2C[i].enableBody = false;  
    bushes2C[i].setVelocity(-130,0);   
   } 
-},
+}
 
 
-setupBushes3: function ()
+setupBushes3()
 {
-  var bushes3C = Bushes3.getChildren();
+  var bushes3C = this.Bushes3.getChildren();
   for (var i = 0; i < bushes3C.length; i++)
   {
     bushes3C[i].body.allowGravity = false;
@@ -328,43 +337,43 @@ setupBushes3: function ()
     bushes3C[i].setVelocity(-110,0);
   }
 
-},
+}
 
 
-setupFences: function ()
+setupFences()
 {
-  var FencesC = Fences.getChildren();
+  var FencesC = this.Fences.getChildren();
   for (var i = 0; i < FencesC.length; i++)
   {
     FencesC[i].body.allowGravity = false;
     FencesC[i].enableBody = false;  
     FencesC[i].setVelocity(-110,0);
   }
-},
+}
 
 
-setupStones: function ()
+setupStones()
 {
-  var stonesC = stones.getChildren();
+  var stonesC = this.stones.getChildren();
   for (var i = 0; i< stonesC.length; i++)
   {
     stonesC[i].body.allowGravity = false;
     stonesC[i].enableBody = true;
     stonesC[i].setVelocity(-200,0);
   }
-},
+}
 
 
-setupCherries: function ()
+setupCherries()
 {
-  var cherriesC = cherries.getChildren();
+  var cherriesC = this.cherries.getChildren();
   for (var i = 0; i < cherriesC.length; i++)
   {
       cherriesC[i].body.allowGravity = false;
       cherriesC[i].enableBody = false;
       cherriesC[i].setVelocity(-200,0);      
   }
-},
+}
 
 
 
@@ -372,64 +381,64 @@ setupCherries: function ()
 
 
 //Update Function
-update: function (){  
+update(){  
    
 
-  if (!isPlayerShielded)
+  if (!this.isPlayerShielded)
   {
-    shield.setPosition(player.x, player.y);
+    this.shield.setPosition(this.player.x, this.player.y);
   }
-  else if (!isPlayer1Shielded)
+  else if (!this.isPlayer1Shielded)
   {
-    shield.setPosition(player1.x, player1.y);
+    this.shield.setPosition(this.player1.x, this.player1.y);
   }
- else if (!isPlayer2Shielded)
+ else if (!this.isPlayer2Shielded)
  {
-  shield.setPosition(player2.x, player2.y);
+  this.shield.setPosition(this.player2.x, this.player2.y);
  }
 
 
  
 
-    mana.scaleX = percentage;
+ this.mana.scaleX = this.percentage;
    
-    player.on('pointerover',function(){
-    if (player.body.touching.down)
+ this.player.on('pointerover',function(){
+    if (this.player.body.touching.down)
     { 
-      player.body.velocity.y = -400;
+      this.player.body.velocity.y = -400;
     }
 })
 
-player1.on('pointerover',function(){
-  if (player1.body.touching.down)
+this.player1.on('pointerover',function(){
+  if (this.player1.body.touching.down)
   {
-    player1.body.velocity.y = -400;
+    this.player1.body.velocity.y = -400;
   }
 })
 
-player2.on('pointerover',function(){
-  if (player2.body.touching.down)
+this.player2.on('pointerover',function(){
+  if (this.player2.body.touching.down)
   {
-    player2.body.velocity.y = -400;
+    this.player2.body.velocity.y = -400;
   }
 })
 
-    if (jumpButton.isDown){    
-      player.body.velocity.y = -400; 
+    if (this.jumpButton.isDown){    
+      this.player.body.velocity.y = -400; 
     }
  
-iterateChildrens1();
-iterateChildrens2();
-iterateChildrens3();
-iterateFences();
-iterateBees();
-iterateStones();
-resetStar();
-},
+    this.iterateChildrens1();
+    this.iterateChildrens2();
+    this.iterateChildrens3();
+    this.iterateFences();
+    this.iterateBees();
+    this.iterateStones();
+    this.resetStar();
+}
 
-iterateChildrens1: function ()
+iterateChildrens1()
 {
-  var bushes1C = Bushes.getChildren();
+  var bushes1C = this.Bushes.getChildren();
   for (var i = 0; i < bushes1C.length; i++)
   {
     if (bushes1C[i].x < -300)
@@ -437,11 +446,11 @@ iterateChildrens1: function ()
       bushes1C[i].setPosition(Phaser.Math.RND.between(800,1200),200);
     }   
  }
-},
+}
 
-iterateChildrens2: function ()
+iterateChildrens2()
 {
-    var bushes2C = Bushes2.getChildren();
+    var bushes2C = this.Bushes2.getChildren();
   for (var i = 0; i<bushes2C.length; i++)
   {
     if (bushes2C[i].x < -300)
@@ -449,11 +458,11 @@ iterateChildrens2: function ()
       bushes2C[i].setPosition(Phaser.Math.RND.between(750,1800),230);
     }    
   }
-},
+}
 
-iterateChildrens3: function ()
+iterateChildrens3()
 {
-  var bushes3C = Bushes3.getChildren();
+  var bushes3C = this.Bushes3.getChildren();
   for (var i = 0; i<bushes3C.length; i++)
   {
     if (bushes3C[i].x < -300)
@@ -461,11 +470,11 @@ iterateChildrens3: function ()
       bushes3C[i].setPosition(Phaser.Math.RND.between(750,2500),240);
     }
   }
-},
+}
 
-iterateFences: function ()
+iterateFences()
 {
-  var fencesC = Fences.getChildren();
+  var fencesC = this.Fences.getChildren();
   for (var i=0; i < fencesC.length; i++)
   { 
     if (fencesC[i].x < -300)
@@ -473,13 +482,13 @@ iterateFences: function ()
       fencesC[i].setPosition(Phaser.Math.RND.between(1000,2000), 200);
     }
   }
-},
+}
  
 
 
-iterateStones: function ()
+iterateStones()
 {   
-  var stonesC = stones.getChildren();
+  var stonesC = this.stones.getChildren();
   for (var i = 0; i< stonesC.length; i++)
   {if (stonesC[i].x < -300)
     {
@@ -487,204 +496,204 @@ iterateStones: function ()
 
     }
   }
-},
+}
 
 
-iterateBees: function ()
+iterateBees()
 { 
-  if (EnemyBee.y < 120)
+  if (this.EnemyBee.y < 120)
   {
-    EnemyBee.setVelocityY(10);
+    this.EnemyBee.setVelocityY(10);
   }
-  else if (EnemyBee.y > 135)
+  else if (this.EnemyBee.y > 135)
   {
-    EnemyBee.setVelocityY(-10);
+    this.EnemyBee.setVelocityY(-10);
   }
-  else if (EnemyBee.x < -300)
+  else if (this.EnemyBee.x < -300)
   {
-    EnemyBee.setPosition(Phaser.Math.RND.between(800,1300),130);
+    this.EnemyBee.setPosition(Phaser.Math.RND.between(800,1300),130);
 
   }
 
-},
+}
  
 
-Stone1Hit: function ()
+Stone1Hit()
 {
-if (!ShieldP1){
-  ReduceMana();
-  StonecolliderActive = false;  
-  player.body.velocity.y = -250;
+if (!this.ShieldP1){
+  this.ReduceMana();
+  this.StonecolliderActive = false;  
+  this.player.body.velocity.y = -250;
   this.time.addEvent({
     delay:100,
     callback: ()=>{
-      StonecolliderActive = true;
+      this.StonecolliderActive = true;
     },
     loop: false
 });
 
 }
-},
+}
 
-Stone1Hit1: function ()
+Stone1Hit1()
 {
-  if (!ShieldP2){
-  ReduceMana();
-  StonecolliderActive = false;  
-  player1.body.velocity.y = -250;
+  if (!this.ShieldP2){
+    this.ReduceMana();
+    this.StonecolliderActive = false;  
+    this.player1.body.velocity.y = -250;
   this.time.addEvent({
     delay:100,
     callback: ()=>{
-    StonecolliderActive = true;
+      this.StonecolliderActive = true;
     },
     loop: false
 });
   }
-},
+}
 
-Stone1Hit2: function ()
+Stone1Hit2()
 {
-  if (!ShieldP3){
-  ReduceMana();
-  StonecolliderActive = false;   
-  player2.body.velocity.y = -250;
+  if (!this.ShieldP3){
+    this.ReduceMana();
+    this.StonecolliderActive = false;   
+    this.player2.body.velocity.y = -250;
   this.time.addEvent({
     delay:100,
     callback: ()=>{
-      StonecolliderActive = true;
+      this.StonecolliderActive = true;
     },
     loop: false
 });
   }
-},
+}
 
-Stone2Hit: function ()
+Stone2Hit()
 {
-  if (!ShieldP1){
-  ReduceMana();
-  StonecolliderActive = false;  
-  player.body.velocity.y = -250;
+  if (!this.ShieldP1){
+    this.ReduceMana();
+    this.StonecolliderActive = false;  
+    this.player.body.velocity.y = -250;
   this.time.addEvent({
     delay:100,
     callback: ()=>{
-      StonecolliderActive = true;
+      this.StonecolliderActive = true;
     },
     loop: false
 });
   }
-},
+}
 
-Stone2Hit1: function ()
+Stone2Hit1()
 {
-  if (!ShieldP2){
-  ReduceMana();
-  StonecolliderActive = false;  
-  player1.body.velocity.y = -250;
+  if (!this.ShieldP2){
+    this.ReduceMana();
+    this.StonecolliderActive = false;  
+    this.player1.body.velocity.y = -250;
   this.time.addEvent({
     delay:100,
     callback: ()=>{
-      StonecolliderActive = true;
+      this.StonecolliderActive = true;
     },
     loop: false
 });
   }
-},
+}
 
-Stone2Hit2: function ()
+Stone2Hit2()
 {
-  if (!ShieldP3){
-  ReduceMana();
-  StonecolliderActive = false;   
-  player2.body.velocity.y = -250;
+  if (!this.ShieldP3){
+    this.ReduceMana();
+    this.StonecolliderActive = false;   
+    this.player2.body.velocity.y = -250;
   this.time.addEvent({
     delay:100,
     callback: ()=>{
-      StonecolliderActive = true;
+      this.StonecolliderActive = true;
     },
     loop: false
 });
   }
-},
+}
 
 
-ReduceMana: function ()
+ReduceMana()
 {
-  percentage -= 0.01;
-},
+  this.percentage -= 0.01;
+}
 
 
-cherryHitMessage: function ()
+cherryHitMessage()
 {
-  cherryCounter++;
-  cherryColliderActive = false;
+  this.cherryCounter++;
+  this.cherryColliderActive = false;
        this.time.addEvent({
         delay: 1000,
         callback: ()=>{
-          cherryColliderActive = true;
+          this.cherryColliderActive = true;
         },
         loop: false
     });
 
-    switch(cherryCounter){
+    switch(this.cherryCounter){
       
       case 1: 
-      cherry.setScale(0.7);
+      this.cherry.setScale(0.7);
       break;
       case 2: 
-      cherry.setScale(0.5);
+      this.cherry.setScale(0.5);
       break;
       case 3:
-        increaseMana();
-      cherryResetPositionAndScale();      
-      cherryCounter = 0;
+        this.increaseMana();
+        this.cherryResetPositionAndScale();      
+        this.cherryCounter = 0;
       break;     
     }
-},
+}
 
 
-cherry1HitMessage: function ()
+cherry1HitMessage()
 {
-  cherry1Counter++;
-  cherry1ColliderActive = false;  
+  this.cherry1Counter++;
+  this.cherry1ColliderActive = false;  
        this.time.addEvent({
         delay: 1000,
         callback: ()=>{
-          cherry1ColliderActive = true;
+          this.cherry1ColliderActive = true;
         },
         loop: false
     });
 
-    switch(cherry1Counter){      
+    switch(this.cherry1Counter){      
       case 1: 
-      cherry1.setScale(0.7);
+      this.cherry1.setScale(0.7);
       break;
       case 2: 
-      cherry1.setScale(0.5);
+      this.cherry1.setScale(0.5);
       break;
       case 3:
-      increaseMana();
-      cherry1ResetPositionAndScale();
-      cherry1Counter = 0;
+        this.increaseMana();
+        this.cherry1ResetPositionAndScale();
+        this.cherry1Counter = 0;
       break;     
     }
-},
+}
 
-cherryResetPositionAndScale: function ()
+cherryResetPositionAndScale()
 {
-  cherry.setPosition(800, cherry.y);
-  cherry.setScale(1);
-},
+  this.cherry.setPosition(800, this.cherry.y);
+  this.cherry.setScale(1);
+}
 
-cherry1ResetPositionAndScale: function ()
+cherry1ResetPositionAndScale()
 {
-  cherry1.setPosition(800, cherry.y);
-  cherry1.setScale(1);
-},
+  this.cherry1.setPosition(800, this.cherry.y);
+  this.cherry1.setScale(1);
+}
 
-increaseMana: function ()
+increaseMana()
 {
-  percentage += 0.05;
-},
+  this.percentage += 0.05;
+}
 
 
 
@@ -692,115 +701,131 @@ increaseMana: function ()
 //If related player shield (SHIELDP) is turned off then reduce mana and allow bee collision again after 500ms
 
 
-beeHIt: function (){
-   if (!ShieldP1){
-  ReduceMana();
-  BeecolliderActive = false;
+beeHIt(){
+   if (!this.ShieldP1){
+    this.ReduceMana();
+    this.BeecolliderActive = false;
        this.time.addEvent({
         delay: 500,
         callback: ()=>{
-          BeecolliderActive = true;
+          this.BeecolliderActive = true;
         },
         loop: false
     });
   }
- },
+ }
 
-beeHIt1: function (){
-   if (!ShieldP2){
-  ReduceMana();
-  BeecolliderActive = false;
+beeHIt1(){
+   if (!this.ShieldP2){
+    this.ReduceMana();
+    this.BeecolliderActive = false;
   console.log("beeHIt!");
        this.time.addEvent({
         delay: 500,
         callback: ()=>{
-          BeecolliderActive = true;
+          this.BeecolliderActive = true;
         },
         loop: false
     });
   }
- },
+ }
 
-beeHIt2: function (){
+beeHIt2(){
 
-  if (!ShieldP3){
-  ReduceMana();
-  BeecolliderActive = false;
+  if (!this.ShieldP3){
+    this.ReduceMana();
+    this.BeecolliderActive = false;
   console.log("beeHIt!");
        this.time.addEvent({
         delay: 500,
         callback: ()=>{
-          BeecolliderActive = true;
+          this.BeecolliderActive = true;
         },
         loop: false
     });
   }
- },
+ }
 
 
 
- playerHitStar: function (){
-  ShieldP1 = true;
+ playerHitStar(){
+  this.ShieldP1 = true;
 console.log('starHit');
-isPlayerShielded = false;
-star.setPosition(3500, star.y);
+this.isPlayerShielded = false;
+this.star.setPosition(3500, this.star.y);
 this.time.addEvent({
   delay: 5000,
   callback: ()=>{
-    isPlayerShielded = true;
-    shield.setPosition(1000, 1000); 
-    ShieldP1 = false;
+    this.isPlayerShielded = true;
+    this.shield.setPosition(1000, 1000); 
+    this.ShieldP1 = false;
   },
   loop: false
 });
-},
+}
 
-player1HitStar: function (){
+player1HitStar(){
 
 
   console.log('star2Hit');
-  ShieldP2 = true;
-  isPlayer1Shielded = false;
-  star.setPosition(3500, star.y);  
+  this.ShieldP2 = true;
+  this.isPlayer1Shielded = false;
+  this.star.setPosition(3500, this.star.y);  
   this.time.addEvent({
     delay: 5000,
     callback: ()=>{
-      isPlayer1Shielded = true;
-      shield.setPosition(1000, 1000); 
-      ShieldP2 = false;
+      this.isPlayer1Shielded = true;
+      this.shield.setPosition(1000, 1000); 
+      this.ShieldP2 = false;
     },
     loop: false
   });
+}
 
-},
+player2HitStar(){
 
-player2HitStar: function (){
-
-  ShieldP3 = true;
+  this.ShieldP3 = true;
   console.log('star2Hit');
-  isPlayer2Shielded = false;
+  this.isPlayer2Shielded = false;
   
-  star.setPosition(3500, star.y);
+  this.star.setPosition(3500, this.star.y);
   this.time.addEvent({
     delay: 5000,
     callback: ()=>{
-      isPlayer2Shielded = true;
-      shield.setPosition(1000, 1000); 
-      ShieldP3 = false;
+      this.isPlayer2Shielded = true;
+      this.shield.setPosition(1000, 1000); 
+      this.ShieldP3 = false;
     },
     loop: false
   });
- },
+ }
 
 
- resetStar: function ()
+ resetStar()
 {
-  if(star.x < -700)
+  if(this.star.x < -700)
   {
-    star.setPosition(2000,star.y);
+    this.star.setPosition(2000, this.star.y);
   }
 }
-});
+}
+
+
+class SceneA  extends Phaser.Scene{
+  constructor() {
+    
+
+    super('SceneA');
+    this.variable1=0;
+  }
+
+  create(){
+    console.log('mannaggia');
+  } 
+
+  update(){}
+
+}
 
 
 
@@ -819,7 +844,7 @@ var config = {
 
   },
     
-  scene: [GameScene]
+  scene: [Controller,SceneA]
 };
 
 var game = new Phaser.Game(config);
