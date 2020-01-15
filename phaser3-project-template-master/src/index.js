@@ -405,7 +405,7 @@ update(){
   this.shield.setPosition(this.Player2.x, this.Player2.y);
  }
 
- if (this.mana.scaleX<0.8)
+ if (this.mana.scaleX<0.2)
  {
   this.scene.start('GameOver');
   
@@ -414,7 +414,7 @@ update(){
  this.mana.scaleX = this.percentage;
 
 
- 
+ /////NOT WORKING////////
 this.Player.on('pointerover',function(pointer)
 {
   if (this.player.body !=='undefined')
@@ -442,6 +442,7 @@ this.Player2.on('pointerover',function(){
 }
 })
 
+//WORKING JUMP FOR MIDDLE PLAYER
     if (this.jumpButton.isDown){    
       this.Player.body.velocity.y = -400; 
     }
@@ -879,7 +880,7 @@ class SceneB  extends Phaser.Scene{
   }
   create(){
     //this.scene.remove('Controller');
-    this.add.text(150,150,'GAMEOVER');
+    this.add.text(330,130,'GAMEOVER');
     this.PlayButton = this.add.image(150,150, 'playButton');
     
 
