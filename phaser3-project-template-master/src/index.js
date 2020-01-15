@@ -124,8 +124,8 @@ preload() {
 
 //Create Function
 create() {
-    
-  this.scene.remove('MainMenu');
+  //this.scene.restart('Controller'); 
+  
   
 this.offset = 380;
 
@@ -407,8 +407,8 @@ update(){
 
  if (this.mana.scaleX<0.8)
  {
-  this.scene.switch('GameOver');
-
+  this.scene.start('GameOver');
+  
  }
 
  this.mana.scaleX = this.percentage;
@@ -848,9 +848,9 @@ class SceneA  extends Phaser.Scene{
 
   preload()
   {
-     this.load.image('playButton', playBTN);
-
+     this.load.image('playButton', playBTN);     
   }
+
   create(){
   
     this.PlayButton = this.add.image(150,150, 'playButton');
@@ -878,15 +878,19 @@ class SceneB  extends Phaser.Scene{
 
   }
   create(){
-    this.scene.remove('Controller');
+    //this.scene.remove('Controller');
     this.add.text(150,150,'GAMEOVER');
     this.PlayButton = this.add.image(150,150, 'playButton');
+    
 
     this.input.on('pointerdown',function()
     {
       this.input.stopPropagation();
-        this.scene.start('Controller');
-        this.scene.remove('GameOver');
+      this.scene.remove('Controller');
+      var GameAgain = this.scene.add('Controller',config);
+      this.scene.start(GameAgain);
+      
+
     },this); 
 
   }
