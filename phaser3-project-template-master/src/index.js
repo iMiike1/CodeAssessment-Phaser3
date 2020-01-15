@@ -307,8 +307,6 @@ this.pointer = this.input.activePointer;
     this.physics.add.overlap(this.Player2, this.star, this.player2HitStar, ()=>{return this.isPlayer2Shielded;}, this );
 
     
-  console.log('Porcoddio');
-    
 }
 
 
