@@ -49,6 +49,7 @@ var config = {
 var game = new Phaser.Game(config);
 
  // preloads everything when project is launched
+ // not added to the scene, just loaded
 
 function preload() {
   
@@ -462,8 +463,11 @@ function setupCherries()
 
  
 //Updates mana bar width everyframe 
+console.log(mana.scaleX);
+if (mana.scaleX>0.02)
+{
 mana.scaleX = percentage;
-   
+}  
 
 
 // Player function that calls the jump on mouse over
