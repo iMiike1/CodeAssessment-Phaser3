@@ -25,13 +25,16 @@ var config = {
     width: 760,
   height: 260,
   parent : 'phaser-example',
+  audio: {
+    disableWebAudio: false
+},
   physics: {
     default: 'arcade',
     // locked FPS at 60 to prevent too fast update for physics
     fps: 60,
     arcade: {
         gravity: { y: 750 },
-        debug: true
+        debug: false
     }
 
   },
@@ -69,6 +72,7 @@ function preload() {
   this.load.image('stars', starImg);
   this.load.image('shield', shieldImg);
   this.load.spritesheet('run', dudeImg, {frameWidth :32, frameHeight: 48});
+  this.load.audioSprite('Coin', './assets/coin.wav');
 
 }
 
@@ -579,6 +583,7 @@ function iterateStones()
 }
 
 
+//This function simulates the bee going up and down while flying
 function iterateBees()
 { 
   if (EnemyBee.y < 120)
@@ -807,6 +812,7 @@ function IterateCherries()
 //If related player shield (SHIELDP) is turned off then reduce mana and allow bees collisions again after 500ms
 
  function beeHIt(){
+  
    if (!ShieldP1){
   ReduceMana();
   BeecolliderActive = false;
