@@ -14,6 +14,7 @@ import manaholderImg from "./assets/manaBarContour.png";
 import cherryImg  from "./assets/cherry.png";
 import starImg  from "./assets/star.png";
 import shieldImg from "./assets/shield.png";
+import playBTN from "./assets/playButton.png";
 import dudeImg from "./assets/dude.png";
 
 //import Menu from "./menu";
@@ -95,6 +96,9 @@ this.pointer;
   this.manaholder;
   this.percentage = 1;
 
+
+  this.PlayButton;
+
 }
 
 preload() {
@@ -114,12 +118,15 @@ preload() {
   this.load.image('cherry', cherryImg);
   this.load.image('stars', starImg);
   this.load.image('shield', shieldImg);
+  
 
 }
 
 //Create Function
 create() {
     
+  this.scene.remove('MainMenu');
+  
 this.offset = 380;
 
 this.pointer = this.input.activePointer;
@@ -398,13 +405,23 @@ update(){
   this.shield.setPosition(this.Player2.x, this.Player2.y);
  }
 
- 
+ if (this.mana.scaleX<0.8)
+ {
+  this.scene.switch('GameOver');
+
+ }
 
  this.mana.scaleX = this.percentage;
 
 
  
-this.Player.on('pointerover',function(pointer){ if (this.player.body !=='undefined'){ this.Player.body.velocity.y = -400;}}); 
+this.Player.on('pointerover',function(pointer)
+{
+  if (this.player.body !=='undefined')
+  { 
+  this.Player.body.velocity.y = -400;
+  }
+}); 
 
 this.Player1.on('pointerover',function(){
 
@@ -824,17 +841,55 @@ player2HitStar(){
 
 class SceneA  extends Phaser.Scene{
   constructor() {
-    
-
-    super('SceneA');
-    this.variable1=0;
+  
+    super('MainMenu');
+   
   }
 
-  create(){
-    console.log('mannaggia');
-  } 
+  preload()
+  {
+     this.load.image('playButton', playBTN);
 
-  update(){}
+  }
+  create(){
+  
+    this.PlayButton = this.add.image(150,150, 'playButton');
+
+    this.input.on('pointerdown',function()
+    {
+      this.input.stopPropagation();
+        this.scene.start('Controller');
+    },this); 
+
+  }
+
+}
+
+class SceneB  extends Phaser.Scene{
+  constructor() {
+  
+    super('GameOver');
+   
+  }
+
+  preload()
+  {
+     this.load.image('playButton', playBTN);
+
+  }
+  create(){
+    this.scene.remove('Controller');
+    this.add.text(150,150,'GAMEOVER');
+    this.PlayButton = this.add.image(150,150, 'playButton');
+
+    this.input.on('pointerdown',function()
+    {
+      this.input.stopPropagation();
+        this.scene.start('Controller');
+        this.scene.remove('GameOver');
+    },this); 
+
+  }
 
 }
 
@@ -855,7 +910,7 @@ var config = {
 
   },
     
-  scene: [Controller,SceneA]
+  scene: [SceneA, Controller, SceneB]
 };
 
 var game = new Phaser.Game(config);
