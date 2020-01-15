@@ -1,3 +1,6 @@
+
+//Import all assets inside project
+
 import Phaser from "phaser";
 import grassImg from "./assets/grass.png";
 import backgroundImg from "./assets/background.png";
@@ -17,8 +20,6 @@ import shieldImg from "./assets/shield.png";
 import dudeImg from "./assets/dude.png";
 
 
-
-
 var config = {
   type: Phaser.AUTO,
     width: 760,
@@ -26,6 +27,7 @@ var config = {
   parent : 'phaser-example',
   physics: {
     default: 'arcade',
+    // locked FPS at 60 to prevent too fast update for physics
     fps: 60,
     arcade: {
         gravity: { y: 750 },
@@ -42,11 +44,14 @@ var config = {
 };
 
 
+// below command removes unused variable notification from debug console
 // eslint-disable-next-line no-unused-vars
 var game = new Phaser.Game(config);
 
+ // preloads everything when project is launched
+
 function preload() {
-    
+  
   this.load.image('grass', grassImg);
   this.load.image('player', playerImg);
   this.load.image('platform', platformImg);
@@ -70,27 +75,31 @@ function preload() {
 var player, player1, player2;
 var platform = null;
 var jumpButton = null;
-//var cursors = null;
+var score = 0;
+var scoreText;
 
+//Environment Gameobjects
 var Bushes,Bushes2,Bushes3;
-
-
 var Bush1,Bush2,Bush3,Bush4,Bush5,Bush6,Bush7,Bush8,Bush9;
-
 var stones;
 var stone1, stone2;
+var Fences;
+var fence1, fence2;
 
+//Enemy Gameobjects
 var EnemyBee;
-var cherries;
-var cherry;
-var cherry1;
+var BeecolliderActive = true;
+var StonecolliderActive = true;
+
+
+//Enemy related variables
 var cherryColliderActive = true;
 var cherry1ColliderActive = true;
 var cherryCounter =0;
 var cherry1Counter =0;
 
 
-//determines if the shield is taken or not the shield to the player
+//determines if the shield is taken or not from the player
 var isPlayerShielded = true; 
 var isPlayer1Shielded = true;
 var isPlayer2Shielded = true;
@@ -100,25 +109,26 @@ var ShieldP1 = false;
 var ShieldP2 = false;
 var ShieldP3 = false;
 
-
+//PickUP items
 var star;
 var shield;
-var Fences;
-var fence1, fence2;
- 
-//var Bush2;
 
-var BeecolliderActive = true;
+var cherries;
+var cherry;
+var cherry1;
 
 
-var StonecolliderActive = true;
 
 var mana, manaholder;
+
+//Percentage variable used to scale Mana Bar in UI
 var percentage = 1;
+
+
 //Create Function
 function create() {
 
-
+//configuration for Player Running animation
 var config = {
   key: 'running',
   frames : this.anims.generateFrameNumbers('run', {frames: [5,6,7,8]}),
@@ -127,14 +137,17 @@ var config = {
 };
 
 
-
+//offset used to place background one after the other, for a correct sidescroller
 var offset = 380;
 
 this.input.enabled = true;
 
+
+
    var bg = this.add.image(760 +offset, 130, "background");
    var bg2 = this.add.image(0 +offset, 130, "background");
 
+   // Group creation for objects pool
    Bushes = this.add.group();
    Bushes2 = this.add.group();
    Bushes3 = this.add.group();
@@ -142,8 +155,9 @@ this.input.enabled = true;
    stones = this.add.group();
    cherries = this.add.group();
 
-
-
+  //Add images in display order: first created is gonna be the one on top.
+  //USE .physics.add if velocity and gravity is used
+  
    Bush9 = this.physics.add.image(800,240,'bush3');
    Bush8 = this.physics.add.image(2000,240,'bush3'); 
    Bush7 = this.physics.add.image(1020,240,'bush3');
@@ -162,14 +176,21 @@ this.input.enabled = true;
   stone1 = this.physics.add.image(500,230,'stone');
   stone2 = this.physics.add.image(1500,230,'stone');
 
+
+  
+  //Enemy Bee setup, disabling body and gravity, since only collision and velocity is used in this game
   EnemyBee = this.physics.add.image(500,130,'bee');
   EnemyBee.enableBody = false;
   EnemyBee.body.allowGravity = false;
   EnemyBee.setVelocity(-80,-10);
 
-  this.anims.create(config);
-  //this.add.sprite(150,150, 'run').play('running');
 
+  //Create Player animations
+  this.anims.create(config);
+  
+
+  //Adding gameObjects to object pools 
+  //Use object pools instead of creating and destroying to improve performance
 
    Bushes.add(Bush1);
    Bushes.add(Bush2);
@@ -186,9 +207,12 @@ this.input.enabled = true;
   Fences.add(fence1);
   Fences.add(fence2);
 
-   stones.add(stone1);
+  stones.add(stone1);
   stones.add(stone2);
 
+
+
+  //Groups iteration for environment objects, applying physics and starting positions
   setupBushes1();
   setupBushes2();
   setupBushes3();
@@ -196,8 +220,12 @@ this.input.enabled = true;
   setupStones();
   
 
-
+  //Platform is to give a platform to the player physics, but still using grass on top for graphics puroposes 
+  //This is the base on where everything that falls with gravity is supposed to stop
    platform = this.physics.add.staticImage(380,260, 'platform');
+
+  // initalising three different players
+  // set them to interactive to make the mouseover jump possible
 
    player = this.physics.add.sprite(300,150, 'run').play('running');
    player.body.allowGravity = true;
@@ -219,11 +247,15 @@ this.input.enabled = true;
    player2.setInteractive();
  
   
+   //Shield is referred to the yellow circle appearing when the player collects a green star
+   //Is placed outside the screen, and teleported to the right player when needed
+   //reset position of shield is optimal compared to create a new object everytime
+  // object pool is not needed since there is only one shield at the time on the screen
    shield = this.physics.add.image(1000, 1000,'shield');
    shield.body.allowGravity = false;
    shield.enableBody = false;
 
-
+  //grass uses the same offset variable as the background, since it needs to scroll infinitely
    var grass = this.add.image(760 +offset, 237, 'grass');
    var grass2 = this.add.image(0  +offset, 237, 'grass');
     
@@ -231,22 +263,34 @@ this.input.enabled = true;
   
   cherry = this.physics.add.image(700,130,'cherry');
   cherry1 = this.physics.add.image(1400,130,'cherry');
+
+
   cherries.add(cherry);
   cherries.add(cherry1);
 
+  //Cherry pool interation to set shared properties throughout the group
   setupCherries();
  
+
+  //Energy bar on top right of the screen
+  //Increases and Decreses in width using percentage variable
   mana = this.add.image(700, 25,'manaBar');
   mana.scaleX = percentage;
   mana.setOrigin(1,0);
+
   manaholder = this.add.image(mana.x,mana.y,'manaHolder');
   manaholder.setOrigin(1,0);
 
+  //Star Pickupitem setup, used to give shield to the collided player
   star = this.physics.add.image(750,150,'stars');
   star.body.allowGravity = false;
   star.enableBody = false;
   star.body.setVelocity(-150,0);
 
+
+  scoreText = this.add.text(25, 25, score, { fontFamily: '"Roboto Condensed"',fill: "#ff0044" });
+
+  ////USING TWEENS TO SCROLL BACKGROUND AND GRASS SIDEWAYS
   this.tweens.add({
     targets: grass, 
      x: 380,
@@ -279,12 +323,17 @@ this.input.enabled = true;
       
     });    
 
+
     //cursors = this.input.keyboard.createCursorKeys();
     jumpButton = this.input.keyboard.addKey('SPACE');
 
+    //Using collider only with player and platform since is the only objects that uses gravity after jumping.
     this.physics.add.collider(player, platform);
     this.physics.add.collider(player1, platform);
     this.physics.add.collider(player2, platform);
+
+  
+    //adding overlap events, and calling designated function if the variable returns: true
 
     this.physics.add.overlap(EnemyBee, player, beeHIt, ()=> { return BeecolliderActive;}, this);
     this.physics.add.overlap(EnemyBee, player1, beeHIt1, ()=> { return BeecolliderActive;}, this);
@@ -312,8 +361,11 @@ this.input.enabled = true;
 }
 
 
+////ENVIRONMENT GROUPS ITERATIONS////
+
 function setupBushes1()
 {
+  
   var bushes1C = Bushes.getChildren();  
   for (var i = 0; i <bushes1C.length; i++)
   {
@@ -390,8 +442,10 @@ function setupCherries()
 
 //Update Function
   function update(){  
-   
 
+    scoreText.setText(score);
+
+  //if the variable is false, it will apply the shield to the designed player
   if (!isPlayerShielded)
   {
     shield.setPosition(player.x, player.y);
@@ -407,10 +461,13 @@ function setupCherries()
 
 
  
-
-    mana.scaleX = percentage;
+//Updates mana bar width everyframe 
+mana.scaleX = percentage;
    
-    player.on('pointerover',function(){
+
+
+// Player function that calls the jump on mouse over
+player.on('pointerover',function(){
     if (player.body.touching.down)
     { 
       player.body.velocity.y = -400;
@@ -435,14 +492,25 @@ player2.on('pointerover',function(){
       player.body.velocity.y = -400; 
     }
  
+
+
+
+//Iterate all moving objects in the game, resetting their position to the right side of the screen, after they get off the screen on left side
 iterateChildrens1();
 iterateChildrens2();
 iterateChildrens3();
 iterateFences();
 iterateBees();
 iterateStones();
-resetStar();
+IterateStar();
+IterateCherries();
+
+// End of update function
 }
+
+
+
+//Math.RND is used to give randomness when objects positions are reset
 
 function iterateChildrens1()
 {
@@ -526,6 +594,12 @@ function iterateBees()
 }
  
 
+
+
+//STONES LOGIC//
+//when players hit stones, the collider is taken off for 100ms to prevent collision repetition
+//A lillte velocity is added to the player to force it to jump the stone
+// ReduceMana() function is called
 function Stone1Hit()
 {
 if (!ShieldP1){
@@ -621,12 +695,20 @@ function Stone2Hit2()
   }
 }
 
-
+//Functions that increses or reduces mana
 function ReduceMana()
 {
   percentage -= 0.01;
 }
+function increaseMana()
+{
+  percentage += 0.05;
+}
 
+
+
+// cherry logic to increase and decrease it's size when hit using a switch to determine how many times it gets hit
+// size resets when hits 3 times or goes outside the screen
 
 function cherryHitMessage()
 {
@@ -640,8 +722,7 @@ function cherryHitMessage()
         loop: false
     });
 
-    switch(cherryCounter){
-      
+    switch(cherryCounter){       
       case 1: 
       cherry.setScale(0.7);
       break;
@@ -650,7 +731,8 @@ function cherryHitMessage()
       break;
       case 3:
         increaseMana();
-      cherryResetPositionAndScale();      
+      cherryResetPositionAndScale();
+      score +=1;     
       cherryCounter = 0;
       break;     
     }
@@ -680,10 +762,12 @@ function cherry1HitMessage()
       increaseMana();
       cherry1ResetPositionAndScale();
       cherry1Counter = 0;
+      score +=1;
       break;     
     }
 }
 
+// functions called when cherries are hit from players
 function cherryResetPositionAndScale()
 {
   cherry.setPosition(800, cherry.y);
@@ -696,16 +780,27 @@ function cherry1ResetPositionAndScale()
   cherry1.setScale(1);
 }
 
-function increaseMana()
+function IterateCherries()
 {
-  percentage += 0.05;
+  if (cherry.x < -300)
+  {
+    cherry.setPosition(1000, cherry.y);
+    cherry.setScale(1);
+  }
+  if (cherry1.x <-300)
+  {
+    cherry1.setPosition(1500, cherry1.y);
+    cherry1.setScale(1);
+
+  }
+
 }
 
 
 
-//Bee Damage mechanics
-//If related player shield (SHIELDP) is turned off then reduce mana and allow bee collision again after 500ms
 
+//Bees Damage mechanics
+//If related player shield (SHIELDP) is turned off then reduce mana and allow bees collisions again after 500ms
 
  function beeHIt(){
    if (!ShieldP1){
@@ -771,9 +866,11 @@ this.time.addEvent({
 
 }
 
+
+//When start are hit, they will reset their positions, and call the shield on the hit player.
+//The shield will reset its position after 5seconds
+
  function player1HitStar(){
-
-
   console.log('star2Hit');
   ShieldP2 = true;
   isPlayer1Shielded = false;
@@ -791,7 +888,6 @@ this.time.addEvent({
 }
 
 function player2HitStar(){
-
   ShieldP3 = true;
   console.log('star2Hit');
   isPlayer2Shielded = false;
@@ -808,8 +904,8 @@ function player2HitStar(){
   });
  }
 
-
-function resetStar()
+//reset start position when goes outside the screen
+function IterateStar()
 {
 
   if(star.x < -700)
